@@ -1,0 +1,52 @@
+{
+  "name": "radiantearth",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www",
+    "seedData": "npm run testStartGanache; npm run devDeployContracts; node ./devSetup",
+    "testStartGanache": "ganache-cli &",
+    "deployKaleidoTest": "truffle migrate --reset --network staging_kaleido",
+    "devDeployContracts": "truffle compile; truffle migrate --reset --network dev",
+    "testDeployContracts": "truffle compile; truffle migrate --reset --network test",
+    "posttest": "pkill -f ganache-cli",
+    "test": "npm run testStartGanache; npm run testDeployContracts; jest --runInBand"
+  },
+  "jest": {
+    "setupTestFrameworkScriptFile": "./testSetup.js"
+  },
+  "dependencies": {
+    "bignumber.js": "^7.2.1",
+    "bip39": "^2.5.0",
+    "cookie-parser": "~1.4.3",
+    "cors": "^2.8.4",
+    "debug": "^2.6.9",
+    "ethereumjs-abi": "^0.6.5",
+    "ethereumjs-tx": "^1.3.5",
+    "ethereumjs-wallet": "^0.6.0",
+    "express": "~4.16.0",
+    "http-errors": "~1.6.2",
+    "lodash": "^4.17.10",
+    "moment": "^2.22.2",
+    "morgan": "~1.9.0",
+    "nock": "^9.4.3",
+    "pg": "^7.4.3",
+    "pg-hstore": "^2.3.2",
+    "pug": "2.0.0-beta11",
+    "request": "^2.87.0",
+    "request-promise-native": "^1.0.5",
+    "sequelize": "^4.37.10",
+    "swagger-jsdoc": "^3.0.2",
+    "truffle-contract": "^3.0.6",
+    "web3": "^0.20.6",
+    "zeppelin-solidity": "^1.10.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "jest": "^23.5.0",
+    "superagent": "^3.8.3",
+    "supertest": "^3.1.0",
+    "timekeeper": "^2.1.2"
+  }
+}

@@ -1,0 +1,136 @@
+@import url("application-bf48a50295e52070e63eaf096b8804eef90e888248ae399cac9f.css");
+@import url("app.3f9e7b08eee70b918c66.css");
+
+body {
+  background: white;
+}
+.t__h1 {
+  margin: 0 0 0px;
+}
+.g__space {
+  margin-bottom: 16px;
+}
+.paper__preview {
+  margin: 5px 0 0px;
+}
+.collection {
+  padding-left: 140px;
+}
+.org-section {
+  padding: 20px;
+}
+.org-btn {
+  width: 100%;
+  padding: 1rem 1rem;
+  font-size: 1.4rem;
+  text-transform: capitalize;
+}
+.capitalize {
+  text-transform: capitalize;
+}
+.paper {
+  padding: 20px;
+}
+.avatar__photo {
+  margin-bottom: 10px;
+}
+hr {
+  height: 12px;
+  border: 0;
+  box-shadow: inset 0 12px 12px -12px rgba(0,191,255,1);
+}
+
+/* CHARTS */
+.thin-border {
+  border: 1px solid #ccd4dc;
+}
+.chart-info {
+  border-top: 1px solid #ccd4dc;
+  padding: .5rem .5rem .5rem 2rem;
+}
+.chart-info p {
+  font-size: 22px;
+  font-weight: 500;
+  margin: 0;
+}
+.chart-info span {
+  color: grey;
+  font-size: 1.4rem;
+}
+.filters {
+  text-align: right;
+}
+.filters select {
+  border: 0px;
+  outline: 0px;
+  background-color: transparent;
+  text-align-last: right;
+}
+.filters button {
+  border: transparent;
+  font-size: 2rem;
+}
+
+/* ORG OVERVIEW */
+.org-overview .column-4 {
+  padding: 0rem;
+}
+.org-overview-item {
+  width: 95%;
+  height: auto;
+  padding: 15px 20px 15px 20px;
+  color: white;
+}
+.org-overview-item p {
+  font-size: 1.8rem;
+  line-height: .8;
+}
+.org-overview-item.i1 {
+  background-color: rgba(147,112,219,1);
+}
+.org-overview-item.i2 {
+  background-color: rgba(0,191,255,1);
+}
+.org-overview-item.i3 {
+  background-color: rgba(255,127,80,1);
+}
+
+/* ORG INFORMATION */
+.verified {
+    display:inline-block;
+    width: 40px;
+    height:40px;
+    transform: rotate(45deg);
+    background: #0B5FBF;
+    border-radius: 50%;
+}
+
+.verified_stem {
+    position: absolute;
+    width: 3px;
+    height: 20px;
+    left: 20px;
+    top: 8px;
+    background-color: white;
+}
+
+.verified_kick {
+    position: absolute;
+    width: 9px;
+    height: 3px;
+    left: 13px;
+    top: 25px;
+    background-color: white;
+}
+table.org-info {
+    border-collapse: collapse;
+    width: 100%;
+}
+.org-info th, .org-info td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+.org-info tr:hover {
+  background-color: #f5f5f5;
+}
