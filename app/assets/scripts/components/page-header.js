@@ -11,7 +11,7 @@ export default class PageHeader extends React.PureComponent {
       <header className='navbar'>
         <div className='navbar-section primary'>
           <a ui-sref='home' className='brand'>
-            <img src='assets/graphics/layout/logo.svg' style={{height: '3.9rem', maxWidth: '50px'}} />
+            <img src='assets/graphics/layout/logo.svg' style={{maxWidth: '50px'}} />
           </a>
           <span className='navbar-vertical-divider'></span>
           <nav>

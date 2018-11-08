@@ -31,7 +31,7 @@ class App extends React.Component {
         </MetaTags>
 
         <PageHeader location={this.props.location} />
-        <main className='page__body' role='main'>
+        <main className='app-content' role='main'>
           {this.props.children}
         </main>
       </div>
