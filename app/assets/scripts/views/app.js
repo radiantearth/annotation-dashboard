@@ -1,49 +1,51 @@
 'use strict'
 import React from 'react'
-import { connect } from 'react-redux'
+import { PropTypes as T } from 'prop-types'
+import c from 'classnames'
+import { withRouter } from 'react-router-dom'
 
-import Map from '../components/map'
-import Control from '../components/control'
+import { environment, appName, appDescription } from '../config'
+
+import PageHeader from '../components/page-header'
+import PageFooter from '../components/page-footer'
+import MetaTags from '../components/meta-tags'
 
 class App extends React.Component {
-  constructor () {
-    super()
-
-    this.storeMapData = this.storeMapData.bind(this)
-    this.getMapData = this.getMapData.bind(this)
-  }
-
   render () {
-    const { dispatch, classes, sliderValue, labels } = this.props
     return (
-      <div>
-        <Map
-          sliderValue={sliderValue}
-          classes={classes}
-          labels={labels}
-          onDataReady={this.storeMapData}
-          />
-        <Control
-          dispatch={dispatch}
-          classes={classes}
-          labels={labels}
-          getMapData={this.getMapData}
-          />
+      <div className={c('page', this.props.className)}>
+        <MetaTags
+          title={appName}
+          description={appDescription} >
+
+          {/* Twitter */}
+          <meta name='twitter:card' content='summary' />
+          <meta name='twitter:site' content='@twitter-handle' />
+          <meta name='twitter:image:src' content='/assets/graphics/meta/default-meta-image.png' />
+
+          {/* OG */}
+          <meta property='og:site_name' content={appName} />
+          <meta property='og:url' content='www.domain.org' />
+          <meta property='og:type' content='website' />
+          <meta property='og:image' content='/assets/graphics/meta/default-meta-image.png' />
+        </MetaTags>
+
+        <PageHeader location={this.props.location} />
+        <main className='page__body' role='main'>
+          {this.props.children}
+        </main>
+        <PageFooter location={this.props.location} />
       </div>
     )
   }
+}
 
-  storeMapData (data) {
-    this.mapData = data
-  }
-
-  getMapData () {
-    return this.mapData
+if (environment !== 'production') {
+  App.propTypes = {
+    className: T.string,
+    location: T.object,
+    children: T.node
   }
 }
 
-function mapStateToProps (state) {
-  return state
-}
-
-module.exports = connect(mapStateToProps)(App)
+export default withRouter(App)

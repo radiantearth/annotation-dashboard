@@ -2,6 +2,7 @@
 
 var fs = require('fs');
 var gulp = require('gulp');
+var cp = require('child_process');
 var $ = require('gulp-load-plugins')();
 var del = require('del');
 var browserSync = require('browser-sync');
@@ -11,12 +12,13 @@ var browserify = require('browserify');
 var source = require('vinyl-source-stream');
 var buffer = require('vinyl-buffer');
 var sourcemaps = require('gulp-sourcemaps');
-var gutil = require('gulp-util');
+var log = require('fancy-log');
 var exit = require('gulp-exit');
 var rev = require('gulp-rev');
 var revReplace = require('gulp-rev-replace');
 var SassString = require('node-sass').types.String;
 var notifier = require('node-notifier');
+var historyApiFallback = require('connect-history-api-fallback');
 
 // /////////////////////////////////////////////////////////////////////////////
 // --------------------------- Variables -------------------------------------//
@@ -28,7 +30,7 @@ var pkg;
 // Environment
 // Set the correct environment, which controls what happens in config.js
 if (!process.env.DS_ENV) {
-  if (!process.env.TRAVIS_BRANCH || process.env.TRAVIS_BRANCH !== process.env.DEPLOY_BRANCH) {
+  if (!process.env.CIRCLE_BRANCH || process.env.CIRCLE_BRANCH !== process.env.PRODUCTION_BRANCH) {
     process.env.DS_ENV = 'staging';
   } else {
     process.env.DS_ENV = 'production';
@@ -55,14 +57,17 @@ gulp.task('default', ['clean'], function () {
   gulp.start('build');
 });
 
-gulp.task('serve', ['vendorScripts', 'javascript', 'styles', 'fonts'], function () {
+gulp.task('serve', ['vendorScripts', 'javascript', 'styles'], function () {
   browserSync({
     port: 3000,
     server: {
       baseDir: ['.tmp', 'app'],
       routes: {
         '/node_modules': './node_modules'
-      }
+      },
+      middleware: [
+        historyApiFallback()
+      ]
     }
   });
 
@@ -70,12 +75,12 @@ gulp.task('serve', ['vendorScripts', 'javascript', 'styles', 'fonts'], function 
   gulp.watch([
     'app/*.html',
     'app/assets/graphics/**/*',
-    '.tmp/assets/fonts/**/*'
+    '!app/assets/graphics/collecticons/**/*'
   ]).on('change', reload);
 
   gulp.watch('app/assets/styles/**/*.scss', ['styles']);
-  gulp.watch('app/assets/fonts/**/*', ['fonts']);
   gulp.watch('package.json', ['vendorScripts']);
+  gulp.watch('app/assets/graphics/collecticons/**', ['collecticons']);
 });
 
 gulp.task('clean', function () {
@@ -129,8 +134,8 @@ gulp.task('javascript', function () {
   }
 
   watcher
-  .on('log', gutil.log)
-  .on('update', bundler);
+    .on('log', log)
+    .on('update', bundler);
 
   return bundler();
 });
@@ -145,7 +150,7 @@ gulp.task('vendorScripts', function () {
     require: pkg.dependencies ? Object.keys(pkg.dependencies) : []
   });
   return vb.bundle()
-    .on('error', gutil.log.bind(gutil, 'Browserify Error'))
+    .on('error', log.bind(log, 'Browserify Error'))
     .pipe(source('vendor.js'))
     .pipe(buffer())
     .pipe(sourcemaps.init({loadMaps: true}))
@@ -154,12 +159,38 @@ gulp.task('vendorScripts', function () {
     .pipe(reload({stream: true}));
 });
 
+// /////////////////////////////////////////////////////////////////////////////
+// ------------------------- Collecticon tasks -------------------------------//
+// --------------------- (Font generation related) ---------------------------//
+// ---------------------------------------------------------------------------//
+gulp.task('collecticons', function (done) {
+  var args = [
+    'node_modules/collecticons-processor/bin/collecticons.js',
+    'compile',
+    'app/assets/graphics/collecticons/',
+    '--font-embed',
+    '--font-dest', 'app/assets/fonts',
+    '--font-name', 'Collecticons',
+    '--font-types', 'woff',
+    '--style-format', 'sass',
+    '--style-dest', 'app/assets/styles/core/',
+    '--style-name', 'collecticons',
+    '--class-name', 'collecticon',
+    '--author-name', 'Development Seed',
+    '--author-url', 'https://developmentseed.org/',
+    '--no-preview'
+  ];
+
+  return cp.spawn('node', args, {stdio: 'inherit'})
+    .on('close', done);
+});
+
 // //////////////////////////////////////////////////////////////////////////////
 // --------------------------- Helper tasks -----------------------------------//
 // ----------------------------------------------------------------------------//
 
-gulp.task('build', ['vendorScripts', 'javascript'], function () {
-  gulp.start(['html', 'images', 'fonts', 'extras'], function () {
+gulp.task('build', ['vendorScripts', 'javascript', 'collecticons'], function () {
+  gulp.start(['html', 'images', 'extras'], function () {
     return gulp.src('dist/**/*')
       .pipe($.size({title: 'build', gzip: true}))
       .pipe(exit());
@@ -191,7 +222,7 @@ gulp.task('styles', function () {
           return v;
         }
       },
-      includePaths: require('node-bourbon').with('node_modules/jeet/scss', require('ui-seed/gulp-addons').scssPath)
+      includePaths: require('node-bourbon').with('node_modules/jeet')
     }))
     .pipe($.sourcemaps.write())
     .pipe(gulp.dest('.tmp/assets/styles'))
@@ -201,7 +232,9 @@ gulp.task('styles', function () {
 gulp.task('html', ['styles'], function () {
   return gulp.src('app/*.html')
     .pipe($.useref({searchPath: ['.tmp', 'app', '.']}))
-    .pipe($.if('*.js', $.uglify()))
+    // Do not compress comparisons, to avoid MapboxGLJS minification issue
+    // https://github.com/mapbox/mapbox-gl-js/issues/4359#issuecomment-286277540
+    .pipe($.if('*.js', $.uglify({compress: {comparisons: false}})))
     .pipe($.if('*.css', $.csso()))
     .pipe($.if(/\.(css|js)$/, rev()))
     .pipe(revReplace())
@@ -219,12 +252,6 @@ gulp.task('images', function () {
       $.imagemin.svgo({plugins: [{cleanupIDs: false}]})
     ])))
     .pipe(gulp.dest('dist/assets/graphics'));
-});
-
-gulp.task('fonts', function () {
-  return gulp.src('app/assets/fonts/**/*')
-    .pipe(gulp.dest('.tmp/assets/fonts'))
-    .pipe(gulp.dest('dist/assets/fonts'));
 });
 
 gulp.task('extras', function () {

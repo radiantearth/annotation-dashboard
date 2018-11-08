@@ -2,41 +2,27 @@
 
 import React from 'react'
 import { render } from 'react-dom'
-import { createStore, applyMiddleware } from 'redux'
 import { Provider } from 'react-redux'
-import thunkMiddleware from 'redux-thunk'
-import { createLogger } from 'redux-logger'
+import { Router, Route, Switch } from 'react-router-dom'
 
-import config from './config'
-import reducer from './reducers'
-import { updateLabels } from './actions'
+import store from './utils/store'
+import history from './utils/history'
 
-const logger = createLogger({
-  level: 'info',
-  collapsed: true,
-  predicate: (getState, action) => {
-    return (config.environment !== 'production')
-  }
-})
+import Home from './views/home'
+import Project from './views/project'
+import UhOh from './views/uhoh'
 
-const store = createStore(
-  reducer,
-  applyMiddleware(
-    thunkMiddleware,
-    logger
-  )
+// Root component. Used by the router.
+const Root = () => (
+  <Provider store={store}>
+    <Router history={history}>
+      <Switch>
+        <Route exact path='/' component={Home}/>
+        <Route path='/project/:id' component={Project}/>
+        <Route path='*' component={UhOh} />
+      </Switch>
+    </Router>
+  </Provider>
 )
 
-const data = require('../labels')
-setTimeout(() => {
-  store.dispatch(updateLabels(data))
-}, 1000)
-
-// Components
-import App from './views/app'
-
-render((
-  <Provider store={store}>
-    <App />
-  </Provider>
-), document.querySelector('#app-container'))
+render(<Root store={store} />, document.querySelector('#app-container'))

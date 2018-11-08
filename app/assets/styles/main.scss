@@ -21,8 +21,6 @@
  */
 
 @import "bourbon";
-@import "node_modules/jeet/jeet";
-@import "ui-seed";
 
 
 #map {
@@ -40,19 +38,6 @@
     list-style: none;
     .label { margin-right: 0.5em; }
   }
-}
-
-[class^="action-"],
-[class*=" action-"] {
-  @extend .button, .button--primary-raised-dark;
-}
-
-.action-download::before {
-  @extend %uisi-download;
-}
-
-.action-upload::before {
-  @extend %uisi-upload;
 }
 
 footer > a { margin-right: 1em; }
