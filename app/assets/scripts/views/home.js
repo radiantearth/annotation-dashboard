@@ -1,6 +1,10 @@
 'use strict'
 import React from 'react'
 import { connect } from 'react-redux'
+import { PropTypes as T } from 'prop-types'
+import { Link } from 'react-router-dom'
+
+import { environment } from '../config'
 
 import { fetchProjects } from '../actions'
 
@@ -14,7 +18,13 @@ class Home extends React.Component {
   render () {
     return (
       <App>
-        <span></span>
+        <ul>{this.props.projects.map(project => {
+          return <li key={project.id}>
+            <Link to={`/project/${project.id}`}>
+              {project.name}
+            </Link>
+          </li>
+        })}</ul>
       </App>
     )
   }
@@ -22,7 +32,14 @@ class Home extends React.Component {
 
 function mapStateToProps (state) {
   return {
-    projects: state.projects
+    projects: state.projects || []
+  }
+}
+
+if (environment !== 'production') {
+  Home.propTypes = {
+    dispatch: T.func,
+    projects: T.array
   }
 }
 

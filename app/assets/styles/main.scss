@@ -10,17 +10,7 @@
 /* Charset */
 
 @charset "UTF-8";
-
-
-/* Libraries
-   ========================================================================== */
-
-/**
- * Using Bourbon for extended SASS functionality:
- * http://bourbon.io/
- */
-
-@import "bourbon";
+@import "sass/imports";
 
 
 #map {
@@ -39,5 +29,3 @@
     .label { margin-right: 0.5em; }
   }
 }
-
-footer > a { margin-right: 1em; }

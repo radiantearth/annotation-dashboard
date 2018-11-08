@@ -1,0 +1,86 @@
+.rzslider {
+  display: block;
+  height: 40px;
+  margin: 0;
+
+  .rz-bar-wrapper {
+    height: auto;
+    margin-top: 0;
+    padding: 0;
+
+    &.rz-draggable {
+      transition: 100ms ease-in-out width,
+                  100ms ease-in-out left;
+    }
+  }
+
+  .rz-bar {
+    border-radius: $border-radius-base;
+    height: 12px;
+    background: $shade-dark;
+    display: block;
+
+    &.rz-selection {
+      background: $brand-primary;
+    }
+  }
+
+  .rz-pointer {
+    width: 18px;
+    height: 18px;
+    left: -9px;
+    top: -3px;
+    border-radius: 1px;
+    background: lighten($brand-primary, 5%);
+    transition: 100ms ease-in-out left;
+
+    &:after {
+      display: none;
+    }
+  }
+
+  .rz-bubble {
+    display: none;
+    &.rz-floor, &.rz-ceil {
+      display: block;
+      padding: 0px;
+      bottom: 0px;
+      margin-top: 24px;
+      font-size: 1.2rem;
+    }
+  }
+
+  .rz-ticks {
+    top: 0;
+    padding: 0;
+
+    .rz-tick {
+      top: 4px;
+      width: 3px;
+      height: 3px;
+      background: $shade-normal;
+      vertical-align: middle;
+      margin-top: 0;
+      display: inline-block;
+
+      .rz-tick-value {
+        font-weight: 600;
+        font-size: 1.3rem;
+        color: $shade-light;
+      }
+    }
+  }
+
+  .rz-ticks.rz-ticks-values-under .rz-tick-value {
+    top: inherit;
+    bottom: inherit;
+    transform: translate(-50%, 12px); // IE is ignoring bottom so we transform-y instead
+  }
+
+  .rz-ticks .rz-tick{
+
+    &.rz-selected {
+      background: none;
+    }
+  }
+}

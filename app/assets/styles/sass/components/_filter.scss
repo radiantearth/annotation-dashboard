@@ -1,0 +1,75 @@
+.filter {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  font-size: 1.2rem;
+  position: relative;
+  &:not(:last-child) {
+    margin-bottom: 1.2rem;
+  }
+  & > *:not(:last-child) {
+    margin-right: 1.2rem !important;
+  }
+  label {
+    color: $shade-light;
+    width: 80px;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+  .selectize-dropdown {
+      width: calc(70%);
+  }
+}
+
+.filter-item {
+  display: block;
+}
+
+.month-filter {
+  display: flex;
+  flex-wrap: wrap;
+
+  .btn {
+    flex-basis: 24%;
+    margin: .5%;
+  }
+}
+
+.tag-filter {
+
+  .btn {
+    margin: .5%;
+  }
+}
+
+.aoi-shape-filter {
+    width: 100%;
+    .filter {
+        justify-content: space-between;
+        label {
+            font-weight: 700;
+            color: $text-base;
+            font-size: 1.4rem;
+        }
+    }
+    .shapefilter-container {
+        width: 20rem;
+    }
+    .shapefilter-box {
+        background: $white;
+        color: $shade-light;
+        border: 1px solid $shade-light;
+        &:hover {
+            background: $shade-light;
+            * {
+                color: $white;
+            }
+        }
+    }
+    .shapefilter-text {
+        color: $shade-light;
+    }
+    .shapefilter-dropdown {
+        border: 1px solid $shade-light;
+    }
+}

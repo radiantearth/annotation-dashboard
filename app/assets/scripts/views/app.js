@@ -8,7 +8,6 @@ import { connect } from 'react-redux'
 import { environment, appName, appDescription } from '../config'
 
 import PageHeader from '../components/page-header'
-import PageFooter from '../components/page-footer'
 import MetaTags from '../components/meta-tags'
 
 class App extends React.Component {
@@ -35,7 +34,6 @@ class App extends React.Component {
         <main className='page__body' role='main'>
           {this.props.children}
         </main>
-        <PageFooter location={this.props.location} />
       </div>
     )
   }
