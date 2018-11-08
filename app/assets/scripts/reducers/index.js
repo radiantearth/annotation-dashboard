@@ -1,19 +1,31 @@
-import { UPDATE_SLIDER, UPDATE_LABELS } from '../actions'
+import { REQUEST_PROJECTS, RECEIVE_PROJECTS } from '../actions'
 
 const initial = {
-  sliderValue: 50,
-  classes: []
+  projects: null
 }
 
 const reducer = (state = initial, action) => {
   switch (action.type) {
-    case UPDATE_SLIDER:
-      return Object.assign({}, state, { sliderValue: action.data })
-    case UPDATE_LABELS:
-      return Object.assign({}, state, {
-        classes: action.data.features[0].properties.label,
-        labels: action.data
-      })
+    case REQUEST_PROJECTS:
+      return {
+        ...state,
+        error: null,
+        fetching: true,
+        fetched: false
+      }
+    case RECEIVE_PROJECTS:
+      state = {
+        ...state,
+        fetching: false,
+        fetched: true
+      }
+
+      if (action.error) {
+        state.error = action.error
+      } else {
+        state.projects = action.data.results
+      }
+      return state
     default:
       return state
   }

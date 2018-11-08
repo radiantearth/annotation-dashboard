@@ -3,6 +3,7 @@ import React from 'react'
 import { PropTypes as T } from 'prop-types'
 import c from 'classnames'
 import { withRouter } from 'react-router-dom'
+import { connect } from 'react-redux'
 
 import { environment, appName, appDescription } from '../config'
 
@@ -48,4 +49,4 @@ if (environment !== 'production') {
   }
 }
 
-export default withRouter(App)
+export default connect()(withRouter(App))
