@@ -1,10 +1,15 @@
 'use strict'
 import React from 'react'
+import { PropTypes as T } from 'prop-types'
 import { connect } from 'react-redux'
+
+import { environment } from '../config'
 
 import App from './app'
 import Map from '../components/map'
 import Control from '../components/control'
+
+import { fetchAnnotations } from '../actions'
 
 class Project extends React.Component {
   constructor () {
@@ -14,20 +19,19 @@ class Project extends React.Component {
     this.getMapData = this.getMapData.bind(this)
   }
 
+  componentDidMount () {
+    const { match } = this.props
+    this.props.dispatch(fetchAnnotations(match.params.id))
+  }
+
   render () {
-    const { dispatch, classes, sliderValue, labels } = this.props
     return (
       <App>
         <Map
-          sliderValue={sliderValue}
-          classes={classes}
-          labels={labels}
+          annotations={this.props.annotations}
           onDataReady={this.storeMapData}
         />
         <Control
-          dispatch={dispatch}
-          classes={classes}
-          labels={labels}
           getMapData={this.getMapData}
         />
       </App>
@@ -44,7 +48,17 @@ class Project extends React.Component {
 }
 
 function mapStateToProps (state) {
-  return state
+  return {
+    annotations: state.annotations || []
+  }
+}
+
+if (environment !== 'production') {
+  Project.propTypes = {
+    match: T.object,
+    dispatch: T.func,
+    annotations: T.array
+  }
 }
 
 module.exports = connect(mapStateToProps)(Project)

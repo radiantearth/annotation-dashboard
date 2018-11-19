@@ -2,6 +2,8 @@ import React from 'react'
 import { PropTypes as T } from 'prop-types'
 import { Link } from 'react-router-dom'
 
+import { environment } from '../config'
+
 const ProjectCard = props => {
   const { project } = props
   return (
@@ -67,3 +69,9 @@ export default ProjectCard
 //     }
 //     return null;
 // }
+
+if (environment !== 'production') {
+  ProjectCard.propTypes = {
+    project: T.object
+  }
+}

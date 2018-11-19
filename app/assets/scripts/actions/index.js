@@ -5,6 +5,9 @@ import config from '../config'
 export const REQUEST_PROJECTS = 'REQUEST_PROJECTS'
 export const RECEIVE_PROJECTS = 'RECEIVE_PROJECTS'
 
+export const REQUEST_ANNOTATIONS = 'REQUEST_ANNOTATIONS'
+export const RECEIVE_ANNOTATIONS = 'RECEIVE_ANNOTATIONS'
+
 export function requestProjects () {
   return { type: REQUEST_PROJECTS }
 }
@@ -15,6 +18,18 @@ export function receiveProjects (projects, error = null) {
 
 export function fetchProjects (query = {}) {
   return getAndDispatch(`${config.api}/projects`, requestProjects, receiveProjects)
+}
+
+export function requestAnnotations () {
+  return { type: REQUEST_ANNOTATIONS }
+}
+
+export function receiveAnnotations (annotations, error = null) {
+  return { type: RECEIVE_ANNOTATIONS, data: annotations, error, receivedAt: Date.now() }
+}
+
+export function fetchAnnotations (projectID, query = {}) {
+  return getAndDispatch(`${config.api}/projects/${projectID}/annotations/`, requestAnnotations, receiveAnnotations)
 }
 
 // Fetcher function
