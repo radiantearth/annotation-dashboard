@@ -14,8 +14,9 @@
 
 
 #map {
-  position: absolute;
-  top: 73px;
-  bottom: 0;
-  width: 100%;
+  display: flex;
+  -ms-flex: 1;
+  flex: 1;
+  height: auto;
+  min-height: 100%;
 }

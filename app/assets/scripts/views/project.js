@@ -7,7 +7,7 @@ import { environment } from '../config'
 
 import App from './app'
 import Map from '../components/map'
-import Control from '../components/control'
+import Panel from '../components/panel'
 
 import { fetchAnnotations } from '../actions'
 
@@ -15,8 +15,8 @@ class Project extends React.Component {
   constructor () {
     super()
 
-    this.storeMapData = this.storeMapData.bind(this)
-    this.getMapData = this.getMapData.bind(this)
+    this.setMap = this.setMap.bind(this)
+    this.getMap = this.getMap.bind(this)
   }
 
   componentDidMount () {
@@ -27,23 +27,26 @@ class Project extends React.Component {
   render () {
     return (
       <App>
-        <Map
-          annotations={this.props.annotations}
-          onDataReady={this.storeMapData}
-        />
-        <Control
-          getMapData={this.getMapData}
-        />
+        <div className='container column-stretch container-not-scrollable'>
+          <Panel
+            getMap={this.getMap}
+            annotations={this.props.annotations}
+          />
+          <Map
+            annotations={this.props.annotations}
+            onDataReady={this.setMap}
+          />
+        </div>
       </App>
     )
   }
 
-  storeMapData (data) {
-    this.mapData = data
+  setMap (map) {
+    this.map = map
   }
 
-  getMapData () {
-    return this.mapData
+  getMap () {
+    return this.map
   }
 }
 

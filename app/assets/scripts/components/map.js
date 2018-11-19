@@ -38,6 +38,7 @@ class Map extends React.Component {
       window.map = map
       map.on('load', () => {
         this.setState({ mapLoaded: true })
+        this.props.onDataReady(map)
       })
     }
   }
@@ -51,7 +52,9 @@ class Map extends React.Component {
 
   render () {
     return (
-      <div id='map' ref={this.initMap.bind(this)}></div>
+      <div className='main'>
+        <div id='map' ref={this.initMap.bind(this)}></div>
+      </div>
     )
   }
 
@@ -64,7 +67,8 @@ class Map extends React.Component {
 
 if (config.environment !== 'production') {
   Map.propTypes = {
-    annotations: T.array
+    annotations: T.array,
+    onDataReady: T.func
   }
 }
 
