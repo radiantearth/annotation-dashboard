@@ -1,10 +1,11 @@
-/* global mapboxgl */
 'use strict'
 import React from 'react'
 import { PropTypes as T } from 'prop-types'
 
 import bbox from '@turf/bbox'
 import { featureCollection as fc } from '@turf/helpers'
+import mapboxgl from 'mapbox-gl'
+import MapboxDraw from '@mapbox/mapbox-gl-draw'
 
 import config from '../config'
 import { cartoStyle } from '../utils/map'
@@ -30,18 +31,12 @@ class Map extends React.Component {
         pitchWithRotate: false,
         dragRotate: false
       })
+
+      const Draw = this.draw = new MapboxDraw()
+      map.addControl(Draw)
+
       window.map = map
       map.on('load', () => {
-        this.map.addSource('annotations', {
-          type: 'geojson',
-          data: fc([])
-        })
-        this.map.addLayer({
-          id: 'annotations',
-          name: 'annotations',
-          source: 'annotations',
-          type: 'fill'
-        })
         this.setState({ mapLoaded: true })
       })
     }
@@ -63,7 +58,7 @@ class Map extends React.Component {
   displayAnnotations (annotations) {
     const bounds = bbox(fc(annotations))
     this.map.fitBounds(bounds, { padding: 50 })
-    this.map.getSource('annotations').setData(fc(annotations))
+    this.draw.add(fc(annotations))
   }
 }
 
