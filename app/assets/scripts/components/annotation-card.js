@@ -7,7 +7,7 @@ class AnnotationCard extends React.Component {
   render () {
     return (
       <div className='list-group-item' onClick={this.props.onClick}>
-      {this.props.annotation.id}
+      {this.props.annotation.properties.label}
       </div>
     )
   }

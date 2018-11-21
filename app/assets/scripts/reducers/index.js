@@ -1,9 +1,11 @@
 import { REQUEST_PROJECTS, RECEIVE_PROJECTS, REQUEST_ANNOTATIONS,
-  RECEIVE_ANNOTATIONS } from '../actions'
+  RECEIVE_ANNOTATIONS, UPDATE_MODAL } from '../actions'
 
 const initial = {
   projects: null,
-  annotations: null
+  annotations: null,
+  setUp: {},
+  modal: true
 }
 
 const reducer = (state = initial, action) => {
@@ -42,6 +44,8 @@ const reducer = (state = initial, action) => {
         state.annotations = action.data.features
       }
       return state
+    case UPDATE_MODAL:
+      return { ...state, modal: action.data }
     default:
       return state
   }

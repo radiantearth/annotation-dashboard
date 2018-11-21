@@ -5,11 +5,7 @@ import { createLogger } from 'redux-logger'
 
 import config from '../config'
 import reducer from '../reducers'
-import { stateFromUrl, createUrlUpdater } from './url-state'
-
-const initialState = {
-  ...stateFromUrl()
-}
+import { createUrlUpdater } from './url-state'
 
 const logger = createLogger({
   level: 'info',
@@ -20,7 +16,7 @@ const logger = createLogger({
 })
 
 const composeEnhancers = config.environment !== 'production' ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose : compose
-const store = createStore(reducer, initialState, composeEnhancers(applyMiddleware(
+const store = createStore(reducer, composeEnhancers(applyMiddleware(
   thunkMiddleware,
   logger,
   createUrlUpdater()

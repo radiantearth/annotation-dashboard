@@ -8,8 +8,9 @@ import { environment } from '../config'
 import App from './app'
 import Map from '../components/map'
 import Panel from '../components/panel'
+import Modal from '../components/modal'
 
-import { fetchAnnotations } from '../actions'
+import { fetchAnnotations, updateModal } from '../actions'
 
 class Project extends React.Component {
   constructor () {
@@ -17,6 +18,7 @@ class Project extends React.Component {
 
     this.setMap = this.setMap.bind(this)
     this.getMap = this.getMap.bind(this)
+    this.closeModal = this.closeModal.bind(this)
   }
 
   componentDidMount () {
@@ -26,7 +28,7 @@ class Project extends React.Component {
 
   render () {
     return (
-      <App>
+      <App modal={this.props.modal ? <Modal onClick={this.closeModal}/> : false}>
         <div className='container column-stretch container-not-scrollable'>
           <Panel
             getMap={this.getMap}
@@ -48,11 +50,16 @@ class Project extends React.Component {
   getMap () {
     return this.map
   }
+
+  closeModal () {
+    this.props.dispatch(updateModal(false))
+  }
 }
 
 function mapStateToProps (state) {
   return {
-    annotations: state.annotations || []
+    annotations: state.annotations || [],
+    modal: state.modal
   }
 }
 
@@ -60,7 +67,8 @@ if (environment !== 'production') {
   Project.propTypes = {
     match: T.object,
     dispatch: T.func,
-    annotations: T.array
+    annotations: T.array,
+    modal: T.bool
   }
 }
 

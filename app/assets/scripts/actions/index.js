@@ -8,6 +8,8 @@ export const RECEIVE_PROJECTS = 'RECEIVE_PROJECTS'
 export const REQUEST_ANNOTATIONS = 'REQUEST_ANNOTATIONS'
 export const RECEIVE_ANNOTATIONS = 'RECEIVE_ANNOTATIONS'
 
+export const UPDATE_MODAL = 'UPDATE_MODAL'
+
 export function requestProjects () {
   return { type: REQUEST_PROJECTS }
 }
@@ -30,6 +32,10 @@ export function receiveAnnotations (annotations, error = null) {
 
 export function fetchAnnotations (projectID, query = {}) {
   return getAndDispatch(`${config.api}/projects/${projectID}/annotations/`, requestAnnotations, receiveAnnotations)
+}
+
+export function updateModal (bool) {
+  return { type: UPDATE_MODAL, data: bool }
 }
 
 // Fetcher function

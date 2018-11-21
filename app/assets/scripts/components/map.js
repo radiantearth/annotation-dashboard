@@ -36,6 +36,8 @@ class Map extends React.Component {
       map.addControl(Draw)
 
       window.map = map
+      window.draw = Draw
+
       map.on('load', () => {
         this.setState({ mapLoaded: true })
         this.props.onDataReady(map)

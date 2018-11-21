@@ -1,17 +1,5 @@
-/* ==========================================================================
-   Main
-   ========================================================================== */
-
-/**
- * Following Necolas' Principles of writing consistent, idiomatic CSS:
- * https://github.com/necolas/idiomatic-css
- */
-
-/* Charset */
-
 @charset "UTF-8";
 @import "sass/theme/high-contrast/app";
-
 
 #map {
   display: flex;
