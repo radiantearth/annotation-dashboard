@@ -10,7 +10,7 @@ import Map from '../components/map'
 import Panel from '../components/panel'
 import Modal from '../components/modal'
 
-import { fetchAnnotations, updateModal } from '../actions'
+import { fetchAnnotations, updateModal, setGrid } from '../actions'
 
 class Project extends React.Component {
   constructor () {
@@ -19,6 +19,7 @@ class Project extends React.Component {
     this.setMap = this.setMap.bind(this)
     this.getMap = this.getMap.bind(this)
     this.closeModal = this.closeModal.bind(this)
+    this.setGrid = this.setGrid.bind(this)
   }
 
   componentDidMount () {
@@ -27,8 +28,15 @@ class Project extends React.Component {
   }
 
   render () {
+    const modal = this.props.modal
+      ? <Modal
+        onClick={this.closeModal}
+        annotations={this.props.annotations}
+        setGrid={this.setGrid}
+      />
+      : false
     return (
-      <App modal={this.props.modal ? <Modal onClick={this.closeModal}/> : false}>
+      <App modal={modal}>
         <div className='container column-stretch container-not-scrollable'>
           <Panel
             getMap={this.getMap}
@@ -53,6 +61,10 @@ class Project extends React.Component {
 
   closeModal () {
     this.props.dispatch(updateModal(false))
+  }
+
+  setGrid (grid) {
+    this.props.dispatch(setGrid(grid))
   }
 }
 

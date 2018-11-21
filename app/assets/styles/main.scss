@@ -1,10 +1,18 @@
 @charset "UTF-8";
 @import "sass/theme/high-contrast/app";
 
-#map {
+#map, #modal-map, .modal-summary {
   display: flex;
   -ms-flex: 1;
   flex: 1;
   height: auto;
   min-height: 100%;
+}
+
+#modal-map {
+  border: 1px solid $shade-light
+}
+
+.modal-body {
+  flex-direction: row;
 }

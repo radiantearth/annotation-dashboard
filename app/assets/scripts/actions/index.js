@@ -10,6 +10,8 @@ export const RECEIVE_ANNOTATIONS = 'RECEIVE_ANNOTATIONS'
 
 export const UPDATE_MODAL = 'UPDATE_MODAL'
 
+export const SET_GRID = 'SET_GRID'
+
 export function requestProjects () {
   return { type: REQUEST_PROJECTS }
 }
@@ -36,6 +38,10 @@ export function fetchAnnotations (projectID, query = {}) {
 
 export function updateModal (bool) {
   return { type: UPDATE_MODAL, data: bool }
+}
+
+export function setGrid (grid) {
+  return { type: SET_GRID, data: grid }
 }
 
 // Fetcher function

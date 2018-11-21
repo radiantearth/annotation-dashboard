@@ -3,12 +3,94 @@
 import React, { Fragment } from 'react'
 import { PropTypes as T } from 'prop-types'
 // import c from 'classnames'
+import mapboxgl from 'mapbox-gl'
 import bbox from '@turf/bbox'
+import bboxPolygon from '@turf/bbox-polygon'
+import cover from '@mapbox/tile-cover'
+import intersect from '@turf/intersect'
+import {featureCollection as fc} from '@turf/helpers'
 
 import { environment } from '../config'
 
 class Modal extends React.Component {
+  constructor () {
+    super()
+
+    this.state = {
+      zoom: 13,
+      grid: fc([]),
+      intersections: [0],
+      annotationsAdded: false,
+      mapLoaded: false
+    }
+
+    this.onSliderChange = this.onSliderChange.bind(this)
+    this.gridAndIntersect = this.gridAndIntersect.bind(this)
+    this.setGrid = this.setGrid.bind(this)
+  }
+
+  initMap () {
+    if (!this.map) {
+      const map = this.map = new mapboxgl.Map({
+        center: [0, 0],
+        container: 'modal-map',
+        style: 'mapbox://styles/mapbox/light-v9',
+        zoom: 2,
+        pitchWithRotate: false,
+        dragRotate: false,
+        keyboard: false,
+        minZoom: 1
+      })
+
+      map.on('load', () => {
+        map.addSource('data', {
+          type: 'geojson',
+          data: fc([])
+        })
+        map.addLayer({
+          id: 'data',
+          type: 'line',
+          source: 'data',
+          paint: {
+            'line-color': 'black',
+            'line-width': 1,
+            'line-opacity': 0.5,
+            'line-dasharray': [4, 2]
+          }
+        })
+
+        map.addSource('grid', {
+          type: 'geojson',
+          data: fc([])
+        })
+        map.addLayer({
+          id: 'grid',
+          type: 'fill',
+          source: 'grid',
+          paint: {
+            'fill-color': '#0B5FBF',
+            'fill-outline-color': 'black',
+            'fill-opacity': 0.4
+          }
+        })
+        this.setState({ mapLoaded: true })
+      })
+    }
+  }
+
+  componentDidUpdate (prevProps, prevState) {
+    if (this.props.annotations && !this.state.annotationsAdded && this.state.mapLoaded) {
+      this.setState({ annotationsAdded: true })
+      this.map.getSource('data').setData(fc(this.props.annotations))
+      this.gridAndIntersect()
+    }
+    if (prevState.zoom !== this.state.zoom) {
+      this.gridAndIntersect()
+    }
+  }
+
   render () {
+    const { intersections, grid } = this.state
     return (
       <Fragment>
         <div className='modal fade in'>
@@ -20,7 +102,16 @@ class Modal extends React.Component {
                 </button>
                 <h4 className='modal-title'>Configure Project Validation</h4>
               </div>
-              <div className='modal-body'></div>
+              <div className='modal-body'>
+                <div id='modal-map' ref={this.initMap.bind(this)}></div>
+                <section className='modal-summary'>
+                  <input type='range' min={10} max={16} defaultValue={13} onChange={this.onSliderChange}/>
+                  <span id='summary-text'>
+                    This validation task contains <strong>{grid.features.length}</strong> grid cells with between <strong>{Math.min(...intersections)}-{Math.max(...intersections)}</strong> features per grid cell
+                  </span>
+                  <button type='button' className='btn btn-primary' onClick={this.setGrid}>Set Grid</button>
+                </section>
+              </div>
               <div className='modal-footer'></div>
             </div>
           </div>
@@ -29,11 +120,43 @@ class Modal extends React.Component {
       </Fragment>
     )
   }
+
+  onSliderChange (e) {
+    this.setState({ zoom: +e.target.value })
+  }
+
+  gridAndIntersect () {
+    const data = fc(this.props.annotations)
+    const bb = bbox(data)
+    this.map.fitBounds(bb, { padding: 100 })
+    const bbp = bboxPolygon(bb)
+    const grid = cover.geojson(bbp.geometry, {
+      min_zoom: this.state.zoom,
+      max_zoom: this.state.zoom
+    })
+
+    const intersections = grid.features.map(f => {
+      return data.features.reduce((a, b) => {
+        return intersect(f, b)
+          ? a + 1
+          : a
+      }, 0)
+    })
+    this.map.getSource('grid').setData(grid)
+    this.setState({ grid, intersections })
+  }
+
+  setGrid () {
+    this.props.setGrid(this.state.grid)
+    this.props.onClick()
+  }
 }
 
 if (environment !== 'production') {
   Modal.propTypes = {
-    onClick: T.func
+    onClick: T.func,
+    annotations: T.array,
+    setGrid: T.func
   }
 }
 

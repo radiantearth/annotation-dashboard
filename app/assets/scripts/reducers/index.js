@@ -1,11 +1,15 @@
+'use strict'
+import {featureCollection as fc} from '@turf/helpers'
+
 import { REQUEST_PROJECTS, RECEIVE_PROJECTS, REQUEST_ANNOTATIONS,
-  RECEIVE_ANNOTATIONS, UPDATE_MODAL } from '../actions'
+  RECEIVE_ANNOTATIONS, UPDATE_MODAL, SET_GRID } from '../actions'
 
 const initial = {
   projects: null,
   annotations: null,
   setUp: {},
-  modal: true
+  modal: true,
+  grid: fc([])
 }
 
 const reducer = (state = initial, action) => {
@@ -46,6 +50,8 @@ const reducer = (state = initial, action) => {
       return state
     case UPDATE_MODAL:
       return { ...state, modal: action.data }
+    case SET_GRID:
+      return { ...state, grid: action.data }
     default:
       return state
   }
