@@ -7,24 +7,28 @@ import bbox from '@turf/bbox'
 
 import { environment } from '../config'
 
-import AnnotationCard from './annotation-card'
+import TaskCard from './task-card'
 
 class Panel extends React.Component {
   constructor () {
     super()
-    this.fitAnnotation = this.fitAnnotation.bind(this)
+    this.fitTask = this.fitTask.bind(this)
+    this.hoverTask = this.hoverTask.bind(this)
   }
 
   render () {
+    const tasks = this.props.grid.features.sort((a, b) => a.id - b.id)
     return (
       <section className='sidebar'>
-        <div className='sidebar-header'>Annotations</div>
+        <div className='sidebar-header'>Tasks: {tasks.filter(t => t.properties.validated).length} of {tasks.length} complete</div>
         <div className='list-group'>
-          {this.props.annotations.map(annotation => {
-            return <AnnotationCard
-              key={annotation.id}
-              annotation={annotation}
-              onClick={this.fitAnnotation.bind(this, annotation.geometry)}
+          {tasks.map(task => {
+            return <TaskCard
+              key={task.properties.tile.join('-')}
+              task={task}
+              onClick={this.fitTask.bind(this, task.geometry)}
+              onEnter={this.hoverTask.bind(this, task.id, 1)}
+              onLeave={this.hoverTask.bind(this, task.id, 0)}
             />
           })}
         </div>
@@ -32,14 +36,21 @@ class Panel extends React.Component {
     )
   }
 
-  fitAnnotation (geometry) {
+  fitTask (geometry) {
     this.props.getMap().fitBounds(bbox(geometry), { padding: 50 })
+  }
+
+  hoverTask (id, hover) {
+    this.props.getMap().setFeatureState({
+      source: 'grid',
+      id
+    }, { hover })
   }
 }
 
 if (environment !== 'production') {
   Panel.propTypes = {
-    annotations: T.array,
+    grid: T.object,
     getMap: T.func
   }
 }

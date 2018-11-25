@@ -7,8 +7,9 @@ import mapboxgl from 'mapbox-gl'
 import bbox from '@turf/bbox'
 import bboxPolygon from '@turf/bbox-polygon'
 import cover from '@mapbox/tile-cover'
+import { tileToGeoJSON } from '@mapbox/tilebelt'
 import intersect from '@turf/intersect'
-import {featureCollection as fc} from '@turf/helpers'
+import { featureCollection as fc, feature } from '@turf/helpers'
 
 import { environment } from '../config'
 
@@ -107,7 +108,7 @@ class Modal extends React.Component {
                 <section className='modal-summary'>
                   <input type='range' min={10} max={16} defaultValue={13} onChange={this.onSliderChange}/>
                   <span id='summary-text'>
-                    This validation task contains <strong>{grid.features.length}</strong> grid cells with between <strong>{Math.min(...intersections)}-{Math.max(...intersections)}</strong> features per grid cell
+                    This validation project contains <strong>{grid.features.length}</strong> grid cells with between <strong>{Math.min(...intersections)}-{Math.max(...intersections)}</strong> features per grid cell
                   </span>
                   <button type='button' className='btn btn-primary' onClick={this.setGrid}>Set Grid</button>
                 </section>
@@ -130,11 +131,16 @@ class Modal extends React.Component {
     const bb = bbox(data)
     this.map.fitBounds(bb, { padding: 100 })
     const bbp = bboxPolygon(bb)
-    const grid = cover.geojson(bbp.geometry, {
+    const gridTiles = cover.tiles(bbp.geometry, {
       min_zoom: this.state.zoom,
       max_zoom: this.state.zoom
     })
-
+    const grid = fc(gridTiles.map(tile => {
+      const feat = feature(tileToGeoJSON(tile))
+      feat.properties.tile = tile
+      feat.id = +tile.join('')
+      return feat
+    }))
     const intersections = grid.features.map(f => {
       return data.features.reduce((a, b) => {
         return intersect(f, b)

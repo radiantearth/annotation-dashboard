@@ -41,10 +41,12 @@ class Project extends React.Component {
           <Panel
             getMap={this.getMap}
             annotations={this.props.annotations}
+            grid={this.props.grid}
           />
           <Map
             annotations={this.props.annotations}
             onDataReady={this.setMap}
+            grid={this.props.grid}
           />
         </div>
       </App>
@@ -71,7 +73,8 @@ class Project extends React.Component {
 function mapStateToProps (state) {
   return {
     annotations: state.annotations || [],
-    modal: state.modal
+    modal: state.modal,
+    grid: state.grid
   }
 }
 
@@ -80,7 +83,8 @@ if (environment !== 'production') {
     match: T.object,
     dispatch: T.func,
     annotations: T.array,
-    modal: T.bool
+    modal: T.bool,
+    grid: T.object
   }
 }
 
