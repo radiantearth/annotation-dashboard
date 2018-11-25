@@ -10,7 +10,7 @@ import Map from '../components/map'
 import Panel from '../components/panel'
 import Modal from '../components/modal'
 
-import { fetchAnnotations, updateModal, setGrid } from '../actions'
+import { fetchAnnotations, updateModal, setGrid, selectTask, fetchLabels } from '../actions'
 
 class Project extends React.Component {
   constructor () {
@@ -20,11 +20,13 @@ class Project extends React.Component {
     this.getMap = this.getMap.bind(this)
     this.closeModal = this.closeModal.bind(this)
     this.setGrid = this.setGrid.bind(this)
+    this.selectTask = this.selectTask.bind(this)
   }
 
   componentDidMount () {
     const { match } = this.props
     this.props.dispatch(fetchAnnotations(match.params.id))
+    this.props.dispatch(fetchLabels(match.params.id))
   }
 
   render () {
@@ -42,6 +44,7 @@ class Project extends React.Component {
             getMap={this.getMap}
             annotations={this.props.annotations}
             grid={this.props.grid}
+            selectTask={this.selectTask}
           />
           <Map
             annotations={this.props.annotations}
@@ -67,6 +70,10 @@ class Project extends React.Component {
 
   setGrid (grid) {
     this.props.dispatch(setGrid(grid))
+  }
+
+  selectTask (task) {
+    this.props.dispatch(selectTask(task))
   }
 }
 

@@ -7,12 +7,14 @@ import bbox from '@turf/bbox'
 
 import { environment } from '../config'
 
+import { selectTask } from '../actions'
+
 import TaskCard from './task-card'
 
 class Panel extends React.Component {
   constructor () {
     super()
-    this.fitTask = this.fitTask.bind(this)
+    this.onClick = this.onClick.bind(this)
     this.hoverTask = this.hoverTask.bind(this)
   }
 
@@ -26,7 +28,7 @@ class Panel extends React.Component {
             return <TaskCard
               key={task.properties.tile.join('-')}
               task={task}
-              onClick={this.fitTask.bind(this, task.geometry)}
+              onClick={this.onClick.bind(this, task)}
               onEnter={this.hoverTask.bind(this, task.id, 1)}
               onLeave={this.hoverTask.bind(this, task.id, 0)}
             />
@@ -36,8 +38,9 @@ class Panel extends React.Component {
     )
   }
 
-  fitTask (geometry) {
-    this.props.getMap().fitBounds(bbox(geometry), { padding: 50 })
+  onClick (task) {
+    this.props.getMap().fitBounds(bbox(task.geometry), { padding: 50 })
+    this.props.selectTask(task.id)
   }
 
   hoverTask (id, hover) {
@@ -50,8 +53,10 @@ class Panel extends React.Component {
 
 if (environment !== 'production') {
   Panel.propTypes = {
+    dispatch: T.func,
     grid: T.object,
-    getMap: T.func
+    getMap: T.func,
+    selectTask: T.func
   }
 }
 

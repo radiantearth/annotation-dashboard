@@ -8,9 +8,14 @@ export const RECEIVE_PROJECTS = 'RECEIVE_PROJECTS'
 export const REQUEST_ANNOTATIONS = 'REQUEST_ANNOTATIONS'
 export const RECEIVE_ANNOTATIONS = 'RECEIVE_ANNOTATIONS'
 
+export const REQUEST_LABELS = 'REQUEST_LABELS'
+export const RECEIVE_LABELS = 'RECEIVE_LABELS'
+
 export const UPDATE_MODAL = 'UPDATE_MODAL'
 
 export const SET_GRID = 'SET_GRID'
+
+export const SELECT_TASK = 'SELECT_TASK'
 
 export function requestProjects () {
   return { type: REQUEST_PROJECTS }
@@ -36,12 +41,28 @@ export function fetchAnnotations (projectID, query = {}) {
   return getAndDispatch(`${config.api}/projects/${projectID}/annotations/`, requestAnnotations, receiveAnnotations)
 }
 
+export function requestLabels () {
+  return { type: REQUEST_LABELS }
+}
+
+export function receiveLabels (labels, error = null) {
+  return { type: RECEIVE_LABELS, data: labels, error, receivedAt: Date.now() }
+}
+
+export function fetchLabels (projectID, query = {}) {
+  return getAndDispatch(`${config.api}/projects/${projectID}/labels/`, requestLabels, receiveLabels)
+}
+
 export function updateModal (bool) {
   return { type: UPDATE_MODAL, data: bool }
 }
 
 export function setGrid (grid) {
   return { type: SET_GRID, data: grid }
+}
+
+export function selectTask (id) {
+  return { type: SELECT_TASK, data: id }
 }
 
 // Fetcher function
