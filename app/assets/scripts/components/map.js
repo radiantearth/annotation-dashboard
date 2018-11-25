@@ -10,6 +10,7 @@ import isEqual from 'lodash.isequal'
 
 import config from '../config'
 import { cartoStyle } from '../utils/map'
+import ValidatorControl from './validator'
 
 class Map extends React.Component {
   constructor () {
@@ -35,6 +36,9 @@ class Map extends React.Component {
 
       const Draw = this.draw = new MapboxDraw()
       map.addControl(Draw)
+
+      this._validator = new ValidatorControl({ task: null })
+      map.addControl(this._validator, 'top-left')
 
       window.map = map
       window.draw = Draw
@@ -76,6 +80,10 @@ class Map extends React.Component {
     if (!isEqual(this.props.grid, prevProps.grid)) {
       this.map.getSource('grid').setData(this.props.grid)
     }
+    if (!isEqual(this.props.selectedTask, prevProps.selectedTask)) {
+      console.log(this.props.selectedTask)
+      this._validator._render({ task: this.props.selectedTask })
+    }
   }
 
   render () {
@@ -97,7 +105,8 @@ if (config.environment !== 'production') {
   Map.propTypes = {
     annotations: T.array,
     onDataReady: T.func,
-    grid: T.object
+    grid: T.object,
+    selectedTask: T.object
   }
 }
 

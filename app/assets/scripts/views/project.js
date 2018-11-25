@@ -50,6 +50,7 @@ class Project extends React.Component {
             annotations={this.props.annotations}
             onDataReady={this.setMap}
             grid={this.props.grid}
+            selectedTask={this.props.selectedTask}
           />
         </div>
       </App>
@@ -81,7 +82,8 @@ function mapStateToProps (state) {
   return {
     annotations: state.annotations || [],
     modal: state.modal,
-    grid: state.grid
+    grid: state.grid,
+    selectedTask: state.grid && state.selectedTaskId ? state.grid.features.find(f => f.id === state.selectedTaskId) : null
   }
 }
 
@@ -91,7 +93,8 @@ if (environment !== 'production') {
     dispatch: T.func,
     annotations: T.array,
     modal: T.bool,
-    grid: T.object
+    grid: T.object,
+    selectedTask: T.object
   }
 }
 
