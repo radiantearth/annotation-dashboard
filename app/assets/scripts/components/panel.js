@@ -7,8 +7,6 @@ import bbox from '@turf/bbox'
 
 import { environment } from '../config'
 
-import { selectTask } from '../actions'
-
 import TaskCard from './task-card'
 
 class Panel extends React.Component {
@@ -24,10 +22,11 @@ class Panel extends React.Component {
       <section className='sidebar'>
         <div className='sidebar-header'>Tasks: {tasks.filter(t => t.properties.validated).length} of {tasks.length} complete</div>
         <div className='list-group'>
-          {tasks.map(task => {
+          {tasks.map((task, i) => {
             return <TaskCard
               key={task.properties.tile.join('-')}
               task={task}
+              index={i + 1}
               onClick={this.onClick.bind(this, task)}
               onEnter={this.hoverTask.bind(this, task.id, 1)}
               onLeave={this.hoverTask.bind(this, task.id, 0)}

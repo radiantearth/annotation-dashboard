@@ -10,7 +10,8 @@ import Map from '../components/map'
 import Panel from '../components/panel'
 import Modal from '../components/modal'
 
-import { fetchAnnotations, updateModal, setGrid, selectTask, fetchLabels } from '../actions'
+import { fetchAnnotations, updateModal, setGrid, selectTask, fetchLabels,
+  markAnnotation } from '../actions'
 
 class Project extends React.Component {
   constructor () {
@@ -21,6 +22,7 @@ class Project extends React.Component {
     this.closeModal = this.closeModal.bind(this)
     this.setGrid = this.setGrid.bind(this)
     this.selectTask = this.selectTask.bind(this)
+    this.markAnnotation = this.markAnnotation.bind(this)
   }
 
   componentDidMount () {
@@ -51,6 +53,8 @@ class Project extends React.Component {
             onDataReady={this.setMap}
             grid={this.props.grid}
             selectedTask={this.props.selectedTask}
+            markAnnotation={this.markAnnotation}
+            labels={this.props.labels}
           />
         </div>
       </App>
@@ -76,6 +80,10 @@ class Project extends React.Component {
   selectTask (task) {
     this.props.dispatch(selectTask(task))
   }
+
+  markAnnotation (id) {
+    this.props.dispatch(markAnnotation(id))
+  }
 }
 
 function mapStateToProps (state) {
@@ -83,7 +91,8 @@ function mapStateToProps (state) {
     annotations: state.annotations || [],
     modal: state.modal,
     grid: state.grid,
-    selectedTask: state.grid && state.selectedTaskId ? state.grid.features.find(f => f.id === state.selectedTaskId) : null
+    selectedTask: state.grid && state.selectedTaskId ? state.grid.features.find(f => f.id === state.selectedTaskId) : null,
+    labels: state.labels
   }
 }
 
@@ -94,7 +103,8 @@ if (environment !== 'production') {
     annotations: T.array,
     modal: T.bool,
     grid: T.object,
-    selectedTask: T.object
+    selectedTask: T.object,
+    labels: T.array
   }
 }
 

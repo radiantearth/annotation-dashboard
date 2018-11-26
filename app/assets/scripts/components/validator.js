@@ -49,14 +49,38 @@ class Validator extends React.Component {
   render () {
     const { task } = this.props
     if (!task) return ''
-    return (
-      <div className='validator map-item'>
-        {this.props.task.id}
-      </div>
-    )
+    // if the task has features and they aren't validated, do that first
+    if (task.properties.annotations && task.properties.annotations.filter(a => !a.validated).length) {
+      const feature = task.properties.annotations.filter(a => !a.validated)[0]
+      this.props.verifyAnnotation(feature.id)
+      return (
+        <div className='validator map-item'>
+          <div className='validator-body'>
+          Is this the correct geometry for {feature.label}? Edit if needed.
+          </div>
+          <footer>
+            <button className='btn btn-primary' onClick={this.props.markAnnotation.bind(this, feature.id)}>Next</button>
+          </footer>
+        </div>
+      )
+    } else {
+      return (
+        <div className='validator map-item'>
+          <div className='validator-body'>
+          Are there any other things which need to be labeled from this set of labels: {this.props.labels.join(', ')}
+          </div>
+          <footer>
+            <button className='btn btn-primary' onClick={() => {}}>Next</button>
+          </footer>
+        </div>
+      )
+    }
   }
 }
 
 Validator.propTypes = {
-  task: T.object
+  task: T.object,
+  verifyAnnotation: T.func,
+  markAnnotation: T.func,
+  labels: T.array
 }

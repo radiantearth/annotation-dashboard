@@ -20,6 +20,8 @@ class Map extends React.Component {
       mapLoaded: false
     }
     this.displayAnnotations = this.displayAnnotations.bind(this)
+    this.verifyAnnotation = this.verifyAnnotation.bind(this)
+    this.markAnnotation = this.markAnnotation.bind(this)
   }
 
   initMap (el) {
@@ -81,8 +83,12 @@ class Map extends React.Component {
       this.map.getSource('grid').setData(this.props.grid)
     }
     if (!isEqual(this.props.selectedTask, prevProps.selectedTask)) {
-      console.log(this.props.selectedTask)
-      this._validator._render({ task: this.props.selectedTask })
+      this._validator._render({
+        task: this.props.selectedTask,
+        verifyAnnotation: this.verifyAnnotation,
+        markAnnotation: this.markAnnotation,
+        labels: this.props.labels
+      })
     }
   }
 
@@ -99,6 +105,17 @@ class Map extends React.Component {
     this.map.fitBounds(bounds, { padding: 50 })
     this.draw.add(fc(annotations))
   }
+
+  verifyAnnotation (id) {
+    const annotation = this.draw.get(id)
+    const bounds = bbox(annotation)
+    this.map.fitBounds(bounds, { padding: 50 })
+    this.draw.changeMode('direct_select', { featureId: id })
+  }
+
+  markAnnotation (id) {
+    this.props.markAnnotation(id)
+  }
 }
 
 if (config.environment !== 'production') {
@@ -106,7 +123,9 @@ if (config.environment !== 'production') {
     annotations: T.array,
     onDataReady: T.func,
     grid: T.object,
-    selectedTask: T.object
+    selectedTask: T.object,
+    markAnnotation: T.func,
+    labels: T.array
   }
 }
 

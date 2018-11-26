@@ -13,7 +13,7 @@ class TaskCard extends React.Component {
         onClick={this.props.onClick}
         onMouseEnter={this.props.onEnter}
         onMouseLeave={this.props.onLeave}>
-        {this.props.task.properties.tile}
+        Task {this.props.index}
       </div>
     )
   }
@@ -24,7 +24,8 @@ if (environment !== 'production') {
     onClick: T.func,
     onLeave: T.func,
     onEnter: T.func,
-    task: T.object
+    task: T.object,
+    index: T.number
   }
 }
 
