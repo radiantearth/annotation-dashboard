@@ -11,7 +11,7 @@ import Panel from '../components/panel'
 import Modal from '../components/modal'
 
 import { fetchAnnotations, updateModal, setGrid, selectTask, fetchLabels,
-  markAnnotation } from '../actions'
+  validateAnnotation } from '../actions'
 
 class Project extends React.Component {
   constructor () {
@@ -22,7 +22,7 @@ class Project extends React.Component {
     this.closeModal = this.closeModal.bind(this)
     this.setGrid = this.setGrid.bind(this)
     this.selectTask = this.selectTask.bind(this)
-    this.markAnnotation = this.markAnnotation.bind(this)
+    this.validateAnnotation = this.validateAnnotation.bind(this)
   }
 
   componentDidMount () {
@@ -53,7 +53,7 @@ class Project extends React.Component {
             onDataReady={this.setMap}
             grid={this.props.grid}
             selectedTask={this.props.selectedTask}
-            markAnnotation={this.markAnnotation}
+            validateAnnotation={this.validateAnnotation}
             labels={this.props.labels}
           />
         </div>
@@ -81,8 +81,8 @@ class Project extends React.Component {
     this.props.dispatch(selectTask(task))
   }
 
-  markAnnotation (id) {
-    this.props.dispatch(markAnnotation(id))
+  validateAnnotation (id) {
+    this.props.dispatch(validateAnnotation(id))
   }
 }
 

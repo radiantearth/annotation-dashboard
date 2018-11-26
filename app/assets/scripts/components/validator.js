@@ -47,19 +47,20 @@ export default class ValidatorControl {
 // via the mapbox code.
 class Validator extends React.Component {
   render () {
-    const { task } = this.props
+    const { task, annotations } = this.props
     if (!task) return ''
     // if the task has features and they aren't validated, do that first
-    if (task.properties.annotations && task.properties.annotations.filter(a => !a.validated).length) {
-      const feature = task.properties.annotations.filter(a => !a.validated)[0]
+    const features = annotations.filter(a => !a.properties.validated && a.properties.tile === task.id)
+    if (features.length) {
+      const feature = features[0]
       this.props.verifyAnnotation(feature.id)
       return (
         <div className='validator map-item'>
           <div className='validator-body'>
-          Is this the correct geometry for {feature.label}? Edit if needed.
+          Is this the correct geometry for {feature.properties.label}? Edit if needed.
           </div>
           <footer>
-            <button className='btn btn-primary' onClick={this.props.markAnnotation.bind(this, feature.id)}>Next</button>
+            <button className='btn btn-primary' onClick={this.props.validateAnnotation.bind(this, feature.id)}>Next</button>
           </footer>
         </div>
       )
@@ -81,6 +82,7 @@ class Validator extends React.Component {
 Validator.propTypes = {
   task: T.object,
   verifyAnnotation: T.func,
-  markAnnotation: T.func,
-  labels: T.array
+  validateAnnotation: T.func,
+  labels: T.array,
+  annotations: T.array
 }

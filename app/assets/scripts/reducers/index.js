@@ -5,7 +5,7 @@ import cloneDeep from 'lodash.clonedeep'
 
 import { REQUEST_PROJECTS, RECEIVE_PROJECTS, REQUEST_ANNOTATIONS,
   RECEIVE_ANNOTATIONS, REQUEST_LABELS, RECEIVE_LABELS, UPDATE_MODAL, SET_GRID,
-  SELECT_TASK, MARK_ANNOTATION } from '../actions'
+  SELECT_TASK, VALIDATE_ANNOTATION } from '../actions'
 
 const initial = {
   projects: null,
@@ -72,17 +72,11 @@ const reducer = (state = initial, action) => {
       // TODO: review this idea and performance
       // upon setting the grid, intersect it with the annotations
       const grid = action.data
-      grid.features.forEach(f => {
-        f.properties.annotations = []
-      })
       state.annotations.forEach(a => {
         grid.features.some(feat => {
           const intersection = intersect(feat, a)
           if (intersection) {
-            feat.properties.annotations.push({
-              id: a.id,
-              label: a.properties.label
-            })
+            a.properties.tile = feat.id
             return true
           }
         })
@@ -90,13 +84,13 @@ const reducer = (state = initial, action) => {
       return { ...state, grid: action.data }
     case SELECT_TASK:
       return { ...state, selectedTaskId: action.data }
-    case MARK_ANNOTATION:
-      // slight abuse of js mutability
-      const newGrid = cloneDeep(state.grid)
-      const taskToEdit = newGrid.features.find(f => f.id === state.selectedTaskId)
-      const annotationToEdit = taskToEdit.properties.annotations.find(a => a.id === action.data)
-      annotationToEdit.validated = true
-      return { ...state, grid: newGrid }
+    case VALIDATE_ANNOTATION:
+      const newList = state.annotations.slice(0)
+      const index = newList.findIndex(a => a.id === action.data)
+      const a = cloneDeep(newList[index])
+      a.properties.validated = true
+      newList[index] = a
+      return { ...state, annotations: newList }
     default:
       return state
   }

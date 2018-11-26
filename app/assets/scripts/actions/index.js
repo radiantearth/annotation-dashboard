@@ -17,7 +17,7 @@ export const SET_GRID = 'SET_GRID'
 
 export const SELECT_TASK = 'SELECT_TASK'
 
-export const MARK_ANNOTATION = 'MARK_ANNOTATION'
+export const VALIDATE_ANNOTATION = 'VALIDATE_ANNOTATION'
 
 export function requestProjects () {
   return { type: REQUEST_PROJECTS }
@@ -67,9 +67,11 @@ export function selectTask (id) {
   return { type: SELECT_TASK, data: id }
 }
 
-export function markAnnotation (id) {
-  return { type: MARK_ANNOTATION, data: id }
+export function validateAnnotation (id) {
+  return { type: VALIDATE_ANNOTATION, data: id }
 }
+
+// export function
 
 // Fetcher function
 function getAndDispatch (url, requestFn, receiveFn) {
