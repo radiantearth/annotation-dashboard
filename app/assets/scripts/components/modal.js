@@ -139,6 +139,7 @@ class Modal extends React.Component {
       const feat = feature(tileToGeoJSON(tile))
       feat.properties.tile = tile
       feat.id = +tile.join('')
+      feat.properties.status = 'unvalidated'
       return feat
     }))
     const intersections = grid.features.map(f => {

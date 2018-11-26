@@ -5,7 +5,7 @@ import cloneDeep from 'lodash.clonedeep'
 
 import { REQUEST_PROJECTS, RECEIVE_PROJECTS, REQUEST_ANNOTATIONS,
   RECEIVE_ANNOTATIONS, REQUEST_LABELS, RECEIVE_LABELS, UPDATE_MODAL, SET_GRID,
-  SELECT_TASK, VALIDATE_ANNOTATION } from '../actions'
+  SELECT_TASK, VALIDATE_ANNOTATION, VALIDATE_GRID } from '../actions'
 
 const initial = {
   projects: null,
@@ -91,6 +91,13 @@ const reducer = (state = initial, action) => {
       a.properties.validated = true
       newList[index] = a
       return { ...state, annotations: newList }
+    case VALIDATE_GRID:
+      const features = state.grid.features.slice(0)
+      const featureIndex = features.findIndex(f => f.id === action.data)
+      const f = cloneDeep(features[featureIndex])
+      f.properties.status = 'validated'
+      features[featureIndex] = f
+      return { ...state, grid: fc(features) }
     default:
       return state
   }

@@ -3,7 +3,6 @@
 import React from 'react'
 import { PropTypes as T } from 'prop-types'
 // import c from 'classnames'
-import bbox from '@turf/bbox'
 
 import { environment } from '../config'
 
@@ -38,8 +37,7 @@ class Panel extends React.Component {
   }
 
   onClick (task) {
-    this.props.getMap().fitBounds(bbox(task.geometry), { padding: 50 })
-    this.props.selectTask(task.id)
+    this.props.selectTask(task)
   }
 
   hoverTask (id, hover) {

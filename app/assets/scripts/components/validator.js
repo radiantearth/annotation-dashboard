@@ -71,7 +71,7 @@ class Validator extends React.Component {
           Are there any other things which need to be labeled from this set of labels: {this.props.labels.join(', ')}
           </div>
           <footer>
-            <button className='btn btn-primary' onClick={() => {}}>Next</button>
+            <button className='btn btn-primary' onClick={this.props.validateGridAndAdvance.bind(this, task)}>Next</button>
           </footer>
         </div>
       )
@@ -84,5 +84,6 @@ Validator.propTypes = {
   verifyAnnotation: T.func,
   validateAnnotation: T.func,
   labels: T.array,
-  annotations: T.array
+  annotations: T.array,
+  validateGridAndAdvance: T.func
 }

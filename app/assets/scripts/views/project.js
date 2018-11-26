@@ -2,6 +2,7 @@
 import React from 'react'
 import { PropTypes as T } from 'prop-types'
 import { connect } from 'react-redux'
+import bbox from '@turf/bbox'
 
 import { environment } from '../config'
 
@@ -11,7 +12,7 @@ import Panel from '../components/panel'
 import Modal from '../components/modal'
 
 import { fetchAnnotations, updateModal, setGrid, selectTask, fetchLabels,
-  validateAnnotation } from '../actions'
+  validateAnnotation, validateGrid } from '../actions'
 
 class Project extends React.Component {
   constructor () {
@@ -23,6 +24,7 @@ class Project extends React.Component {
     this.setGrid = this.setGrid.bind(this)
     this.selectTask = this.selectTask.bind(this)
     this.validateAnnotation = this.validateAnnotation.bind(this)
+    this.validateGridAndAdvance = this.validateGridAndAdvance.bind(this)
   }
 
   componentDidMount () {
@@ -55,6 +57,7 @@ class Project extends React.Component {
             selectedTask={this.props.selectedTask}
             validateAnnotation={this.validateAnnotation}
             labels={this.props.labels}
+            validateGridAndAdvance={this.validateGridAndAdvance}
           />
         </div>
       </App>
@@ -78,11 +81,21 @@ class Project extends React.Component {
   }
 
   selectTask (task) {
-    this.props.dispatch(selectTask(task))
+    this.getMap().fitBounds(bbox(task.geometry), { padding: 50 })
+    this.props.dispatch(selectTask(task.id))
   }
 
   validateAnnotation (id) {
     this.props.dispatch(validateAnnotation(id))
+  }
+
+  validateGridAndAdvance (task) {
+    this.props.dispatch(validateGrid(task.id))
+    const features = this.props.grid.features
+    const current = features.findIndex(f => f.id === task.id)
+    const next = features[(current + 1) % features.length]
+    console.log(task, features[current], next);
+    this.selectTask(next)
   }
 }
 

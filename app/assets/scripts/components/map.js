@@ -88,7 +88,8 @@ class Map extends React.Component {
         annotations: this.props.annotations,
         verifyAnnotation: this.verifyAnnotation,
         validateAnnotation: this.validateAnnotation,
-        labels: this.props.labels
+        labels: this.props.labels,
+        validateGridAndAdvance: this.props.validateGridAndAdvance
       })
     }
   }
@@ -126,7 +127,8 @@ if (config.environment !== 'production') {
     grid: T.object,
     selectedTask: T.object,
     validateAnnotation: T.func,
-    labels: T.array
+    labels: T.array,
+    validateGridAndAdvance: T.func
   }
 }
 

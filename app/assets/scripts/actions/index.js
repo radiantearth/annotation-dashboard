@@ -18,6 +18,7 @@ export const SET_GRID = 'SET_GRID'
 export const SELECT_TASK = 'SELECT_TASK'
 
 export const VALIDATE_ANNOTATION = 'VALIDATE_ANNOTATION'
+export const VALIDATE_GRID = 'VALIDATE_GRID'
 
 export function requestProjects () {
   return { type: REQUEST_PROJECTS }
@@ -69,6 +70,10 @@ export function selectTask (id) {
 
 export function validateAnnotation (id) {
   return { type: VALIDATE_ANNOTATION, data: id }
+}
+
+export function validateGrid (id) {
+  return { type: VALIDATE_GRID, data: id }
 }
 
 // export function
