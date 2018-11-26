@@ -2,6 +2,7 @@
 import React from 'react'
 import { PropTypes as T } from 'prop-types'
 import { render, unmountComponentAtNode } from 'react-dom'
+import bbox from '@turf/bbox'
 // import c from 'classnames'
 
 // Mapbox Control class.
@@ -65,13 +66,14 @@ class Validator extends React.Component {
         </div>
       )
     } else {
+      this.props.map.fitBounds(bbox(task.geometry), { padding: 50 })
       return (
         <div className='validator map-item'>
           <div className='validator-body'>
           Are there any other things which need to be labeled from this set of labels: {this.props.labels.join(', ')}
           </div>
           <footer>
-            <button className='btn btn-primary' onClick={this.props.validateGridAndAdvance.bind(this, task)}>Next</button>
+            <button className='btn btn-primary' onClick={this.props.validateGridAndAdvance.bind(this, task)}>Confirm & Next Grid Cell</button>
           </footer>
         </div>
       )
@@ -85,5 +87,6 @@ Validator.propTypes = {
   validateAnnotation: T.func,
   labels: T.array,
   annotations: T.array,
-  validateGridAndAdvance: T.func
+  validateGridAndAdvance: T.func,
+  map: T.object
 }

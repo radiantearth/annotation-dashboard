@@ -89,7 +89,8 @@ class Map extends React.Component {
         verifyAnnotation: this.verifyAnnotation,
         validateAnnotation: this.validateAnnotation,
         labels: this.props.labels,
-        validateGridAndAdvance: this.props.validateGridAndAdvance
+        validateGridAndAdvance: this.props.validateGridAndAdvance,
+        map: this.map
       })
     }
   }
@@ -111,7 +112,7 @@ class Map extends React.Component {
   verifyAnnotation (id) {
     const annotation = this.draw.get(id)
     const bounds = bbox(annotation)
-    this.map.fitBounds(bounds, { padding: 50 })
+    this.map.fitBounds(bounds, { padding: 100 })
     this.draw.changeMode('direct_select', { featureId: id })
   }
 
