@@ -2,7 +2,7 @@
 
 import React, { Fragment } from 'react'
 import { PropTypes as T } from 'prop-types'
-// import c from 'classnames'
+import c from 'classnames'
 import mapboxgl from 'mapbox-gl'
 import bbox from '@turf/bbox'
 import bboxPolygon from '@turf/bbox-polygon'
@@ -98,7 +98,7 @@ class Modal extends React.Component {
           <div className='modal-dialog'>
             <div className='modal-content'>
               <div className='modal-header'>
-                <button type='button' className='close' aria-label='Close' onClick={this.props.onClick}>
+                <button type='button' className={c('close', { disabled: !grid.features.length })} aria-label='Close' onClick={() => this.props.onClick(this.state.grid)}>
                   <span aria-hidden='true'>×</span>
                 </button>
                 <h4 className='modal-title'>Configure Project Validation</h4>
@@ -110,7 +110,7 @@ class Modal extends React.Component {
                   <span id='summary-text'>
                     This validation project contains <strong>{grid.features.length}</strong> grid cells with between <strong>{Math.min(...intersections)}-{Math.max(...intersections)}</strong> features per grid cell
                   </span>
-                  <button type='button' className='btn btn-primary' onClick={this.setGrid}>Set Grid</button>
+                  <button type='button' className={c('btn btn-primary', { disabled: !grid.features.length })} onClick={this.setGrid}>Set Grid</button>
                 </section>
               </div>
               <div className='modal-footer'></div>

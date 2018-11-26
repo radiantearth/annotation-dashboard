@@ -25,3 +25,11 @@
   background-color: $white;
   padding: 1em;
 }
+
+.disabled {
+  pointer-events: none;
+}
+
+.list-group {
+  overflow: scroll;
+}

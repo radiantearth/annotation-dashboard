@@ -72,8 +72,9 @@ class Project extends React.Component {
     return this.map
   }
 
-  closeModal () {
+  closeModal (grid) {
     this.props.dispatch(updateModal(false))
+    this.props.dispatch(setGrid(grid))
   }
 
   setGrid (grid) {
@@ -94,7 +95,6 @@ class Project extends React.Component {
     const features = this.props.grid.features
     const current = features.findIndex(f => f.id === task.id)
     const next = features[(current + 1) % features.length]
-    console.log(task, features[current], next);
     this.selectTask(next)
   }
 }
