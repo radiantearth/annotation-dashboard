@@ -9,7 +9,6 @@ import { environment, appName, appDescription } from '../config'
 
 import PageHeader from '../components/page-header'
 import MetaTags from '../components/meta-tags'
-import Modal from '../components/modal'
 
 class App extends React.Component {
   render () {

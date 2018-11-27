@@ -70,6 +70,17 @@ class Map extends React.Component {
             'fill-opacity': ['case', ['==', ['feature-state', 'hover'], 1], 0.3, 0]
           }
         })
+        map.addSource('imagery', {
+          type: 'raster',
+          tiles: [
+            `https://tiles.rasterfoundry.com/${this.props.projectId}/{z}/{x}/{y}?token=${config.sessionToken}`
+          ]
+        })
+        map.addLayer({
+          id: 'imagery',
+          type: 'raster',
+          source: 'imagery'
+        }, 'gl-draw-polygon-fill-inactive.cold')
       })
     }
   }
@@ -129,7 +140,8 @@ if (config.environment !== 'production') {
     selectedTask: T.object,
     validateAnnotation: T.func,
     labels: T.array,
-    validateGridAndAdvance: T.func
+    validateGridAndAdvance: T.func,
+    projectId: T.string
   }
 }
 

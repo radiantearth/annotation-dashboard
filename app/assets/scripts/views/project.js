@@ -21,7 +21,6 @@ class Project extends React.Component {
     this.setMap = this.setMap.bind(this)
     this.getMap = this.getMap.bind(this)
     this.closeModal = this.closeModal.bind(this)
-    this.setGrid = this.setGrid.bind(this)
     this.selectTask = this.selectTask.bind(this)
     this.validateAnnotation = this.validateAnnotation.bind(this)
     this.validateGridAndAdvance = this.validateGridAndAdvance.bind(this)
@@ -34,11 +33,11 @@ class Project extends React.Component {
   }
 
   render () {
+    const projectId = this.props.match.params.id
     const modal = this.props.modal
       ? <Modal
         onClick={this.closeModal}
         annotations={this.props.annotations}
-        setGrid={this.setGrid}
       />
       : false
     return (
@@ -58,6 +57,7 @@ class Project extends React.Component {
             validateAnnotation={this.validateAnnotation}
             labels={this.props.labels}
             validateGridAndAdvance={this.validateGridAndAdvance}
+            projectId={projectId}
           />
         </div>
       </App>
@@ -74,10 +74,6 @@ class Project extends React.Component {
 
   closeModal (grid) {
     this.props.dispatch(updateModal(false))
-    this.props.dispatch(setGrid(grid))
-  }
-
-  setGrid (grid) {
     this.props.dispatch(setGrid(grid))
   }
 

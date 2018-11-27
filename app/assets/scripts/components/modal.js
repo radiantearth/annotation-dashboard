@@ -27,7 +27,6 @@ class Modal extends React.Component {
 
     this.onSliderChange = this.onSliderChange.bind(this)
     this.gridAndIntersect = this.gridAndIntersect.bind(this)
-    this.setGrid = this.setGrid.bind(this)
   }
 
   initMap () {
@@ -110,7 +109,7 @@ class Modal extends React.Component {
                   <span id='summary-text'>
                     This validation project contains <strong>{grid.features.length}</strong> grid cells with between <strong>{Math.min(...intersections)}-{Math.max(...intersections)}</strong> features per grid cell
                   </span>
-                  <button type='button' className={c('btn btn-primary', { disabled: !grid.features.length })} onClick={this.setGrid}>Set Grid</button>
+                  <button type='button' className={c('btn btn-primary', { disabled: !grid.features.length })} onClick={() => this.props.onClick(this.state.grid)}>Set Grid</button>
                 </section>
               </div>
               <div className='modal-footer'></div>
@@ -152,18 +151,12 @@ class Modal extends React.Component {
     this.map.getSource('grid').setData(grid)
     this.setState({ grid, intersections })
   }
-
-  setGrid () {
-    this.props.setGrid(this.state.grid)
-    this.props.onClick()
-  }
 }
 
 if (environment !== 'production') {
   Modal.propTypes = {
     onClick: T.func,
-    annotations: T.array,
-    setGrid: T.func
+    annotations: T.array
   }
 }
 
