@@ -49,7 +49,7 @@ export function requestLabels () {
 }
 
 export function receiveLabels (labels, error = null) {
-  return { type: RECEIVE_LABELS, data: labels, error, receivedAt: Date.now() }
+  return { type: RECEIVE_LABELS, data: labels.concat(['test label 1', 'test label 2']), error, receivedAt: Date.now() }
 }
 
 export function fetchLabels (projectID, query = {}) {
