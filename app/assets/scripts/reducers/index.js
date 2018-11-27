@@ -5,7 +5,7 @@ import cloneDeep from 'lodash.clonedeep'
 
 import { REQUEST_PROJECTS, RECEIVE_PROJECTS, REQUEST_ANNOTATIONS,
   RECEIVE_ANNOTATIONS, REQUEST_LABELS, RECEIVE_LABELS, UPDATE_MODAL, SET_GRID,
-  SELECT_TASK, VALIDATE_ANNOTATION, VALIDATE_GRID } from '../actions'
+  SELECT_TASK, UPDATE_ANNOTATION, VALIDATE_GRID, SET_DRAW_LABEL } from '../actions'
 
 const initial = {
   projects: null,
@@ -13,7 +13,8 @@ const initial = {
   setUp: {},
   modal: true,
   grid: fc([]),
-  selectedTaskId: null
+  selectedTaskId: null,
+  drawLabel: null
 }
 
 const reducer = (state = initial, action) => {
@@ -64,6 +65,7 @@ const reducer = (state = initial, action) => {
         state.error = action.error
       } else {
         state.labels = action.data
+        state.drawLabel = action.data[0]
       }
       return state
     case UPDATE_MODAL:
@@ -84,12 +86,10 @@ const reducer = (state = initial, action) => {
       return { ...state, grid: action.data }
     case SELECT_TASK:
       return { ...state, selectedTaskId: action.data }
-    case VALIDATE_ANNOTATION:
+    case UPDATE_ANNOTATION:
       const newList = state.annotations.slice(0)
-      const index = newList.findIndex(a => a.id === action.data)
-      const a = cloneDeep(newList[index])
-      a.properties.validated = true
-      newList[index] = a
+      const index = newList.findIndex(a => a.id === action.data.id)
+      newList[index] = action.data
       return { ...state, annotations: newList }
     case VALIDATE_GRID:
       const features = state.grid.features.slice(0)
@@ -98,6 +98,8 @@ const reducer = (state = initial, action) => {
       f.properties.status = 'validated'
       features[featureIndex] = f
       return { ...state, grid: fc(features) }
+    case SET_DRAW_LABEL:
+      return { ...state, drawLabel: action.data }
     default:
       return state
   }

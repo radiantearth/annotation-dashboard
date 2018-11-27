@@ -21,7 +21,7 @@ class Map extends React.Component {
     }
     this.displayAnnotations = this.displayAnnotations.bind(this)
     this.verifyAnnotation = this.verifyAnnotation.bind(this)
-    this.validateAnnotation = this.validateAnnotation.bind(this)
+    this.updateAnnotation = this.updateAnnotation.bind(this)
   }
 
   initMap (el) {
@@ -98,10 +98,12 @@ class Map extends React.Component {
         task: this.props.selectedTask,
         annotations: this.props.annotations,
         verifyAnnotation: this.verifyAnnotation,
-        validateAnnotation: this.validateAnnotation,
+        updateAnnotation: this.updateAnnotation,
         labels: this.props.labels,
         validateGridAndAdvance: this.props.validateGridAndAdvance,
-        map: this.map
+        map: this.map,
+        drawLabel: this.props.drawLabel,
+        setDrawLabel: this.props.setDrawLabel
       })
     }
   }
@@ -127,8 +129,8 @@ class Map extends React.Component {
     this.draw.changeMode('direct_select', { featureId: id })
   }
 
-  validateAnnotation (id) {
-    this.props.validateAnnotation(id)
+  updateAnnotation (feature) {
+    this.props.updateAnnotation(feature)
   }
 }
 
@@ -138,10 +140,12 @@ if (config.environment !== 'production') {
     onDataReady: T.func,
     grid: T.object,
     selectedTask: T.object,
-    validateAnnotation: T.func,
+    updateAnnotation: T.func,
     labels: T.array,
     validateGridAndAdvance: T.func,
-    projectId: T.string
+    projectId: T.string,
+    drawLabel: T.string,
+    setDrawLabel: T.func
   }
 }
 
