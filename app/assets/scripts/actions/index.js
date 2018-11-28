@@ -17,8 +17,9 @@ export const SET_GRID = 'SET_GRID'
 
 export const SELECT_TASK = 'SELECT_TASK'
 
-export const VALIDATE_ANNOTATION = 'VALIDATE_ANNOTATION'
+export const UPDATE_ANNOTATION = 'UPDATE_ANNOTATION'
 export const VALIDATE_GRID = 'VALIDATE_GRID'
+export const SET_DRAW_LABEL = 'SET_DRAW_LABEL'
 
 export function requestProjects () {
   return { type: REQUEST_PROJECTS }
@@ -49,7 +50,7 @@ export function requestLabels () {
 }
 
 export function receiveLabels (labels, error = null) {
-  return { type: RECEIVE_LABELS, data: labels, error, receivedAt: Date.now() }
+  return { type: RECEIVE_LABELS, data: labels.concat(['test label 1', 'test label 2']), error, receivedAt: Date.now() }
 }
 
 export function fetchLabels (projectID, query = {}) {
@@ -68,15 +69,17 @@ export function selectTask (id) {
   return { type: SELECT_TASK, data: id }
 }
 
-export function validateAnnotation (id) {
-  return { type: VALIDATE_ANNOTATION, data: id }
+export function updateAnnotation (feature) {
+  return { type: UPDATE_ANNOTATION, data: feature }
 }
 
 export function validateGrid (id) {
   return { type: VALIDATE_GRID, data: id }
 }
 
-// export function
+export function setDrawLabel (label) {
+  return { type: SET_DRAW_LABEL, data: label }
+}
 
 // Fetcher function
 function getAndDispatch (url, requestFn, receiveFn) {

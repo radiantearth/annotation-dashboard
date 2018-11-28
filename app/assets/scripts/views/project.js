@@ -12,7 +12,7 @@ import Panel from '../components/panel'
 import Modal from '../components/modal'
 
 import { fetchAnnotations, updateModal, setGrid, selectTask, fetchLabels,
-  validateAnnotation, validateGrid } from '../actions'
+  updateAnnotation, validateGrid, setDrawLabel } from '../actions'
 
 class Project extends React.Component {
   constructor () {
@@ -21,10 +21,10 @@ class Project extends React.Component {
     this.setMap = this.setMap.bind(this)
     this.getMap = this.getMap.bind(this)
     this.closeModal = this.closeModal.bind(this)
-    this.setGrid = this.setGrid.bind(this)
     this.selectTask = this.selectTask.bind(this)
-    this.validateAnnotation = this.validateAnnotation.bind(this)
+    this.updateAnnotation = this.updateAnnotation.bind(this)
     this.validateGridAndAdvance = this.validateGridAndAdvance.bind(this)
+    this.setDrawLabel = this.setDrawLabel.bind(this)
   }
 
   componentDidMount () {
@@ -34,11 +34,11 @@ class Project extends React.Component {
   }
 
   render () {
+    const projectId = this.props.match.params.id
     const modal = this.props.modal
       ? <Modal
         onClick={this.closeModal}
         annotations={this.props.annotations}
-        setGrid={this.setGrid}
       />
       : false
     return (
@@ -55,9 +55,12 @@ class Project extends React.Component {
             onDataReady={this.setMap}
             grid={this.props.grid}
             selectedTask={this.props.selectedTask}
-            validateAnnotation={this.validateAnnotation}
+            updateAnnotation={this.updateAnnotation}
             labels={this.props.labels}
             validateGridAndAdvance={this.validateGridAndAdvance}
+            projectId={projectId}
+            drawLabel={this.props.drawLabel}
+            setDrawLabel={this.setDrawLabel}
           />
         </div>
       </App>
@@ -77,17 +80,13 @@ class Project extends React.Component {
     this.props.dispatch(setGrid(grid))
   }
 
-  setGrid (grid) {
-    this.props.dispatch(setGrid(grid))
-  }
-
   selectTask (task) {
     this.getMap().fitBounds(bbox(task.geometry), { padding: 50 })
     this.props.dispatch(selectTask(task.id))
   }
 
-  validateAnnotation (id) {
-    this.props.dispatch(validateAnnotation(id))
+  updateAnnotation (feature) {
+    this.props.dispatch(updateAnnotation(feature))
   }
 
   validateGridAndAdvance (task) {
@@ -97,6 +96,10 @@ class Project extends React.Component {
     const next = features[(current + 1) % features.length]
     this.selectTask(next)
   }
+
+  setDrawLabel (label) {
+    this.props.dispatch(setDrawLabel(label))
+  }
 }
 
 function mapStateToProps (state) {
@@ -105,7 +108,8 @@ function mapStateToProps (state) {
     modal: state.modal,
     grid: state.grid,
     selectedTask: state.grid && state.selectedTaskId ? state.grid.features.find(f => f.id === state.selectedTaskId) : null,
-    labels: state.labels
+    labels: state.labels,
+    drawLabel: state.drawLabel
   }
 }
 
@@ -117,7 +121,8 @@ if (environment !== 'production') {
     modal: T.bool,
     grid: T.object,
     selectedTask: T.object,
-    labels: T.array
+    labels: T.array,
+    drawLabel: T.string
   }
 }
 

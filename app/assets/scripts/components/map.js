@@ -7,10 +7,14 @@ import { featureCollection as fc } from '@turf/helpers'
 import mapboxgl from 'mapbox-gl'
 import MapboxDraw from '@mapbox/mapbox-gl-draw'
 import isEqual from 'lodash.isequal'
+import flatten from 'lodash.flatten'
 
 import config from '../config'
 import { cartoStyle } from '../utils/map'
+import styles from '../utils/draw-style'
 import ValidatorControl from './validator'
+
+const LABEL_COLORS = ['#0B5FBF', '#81C784', '#FFCA28', '#E57373', '#E69348']
 
 class Map extends React.Component {
   constructor () {
@@ -21,7 +25,8 @@ class Map extends React.Component {
     }
     this.displayAnnotations = this.displayAnnotations.bind(this)
     this.verifyAnnotation = this.verifyAnnotation.bind(this)
-    this.validateAnnotation = this.validateAnnotation.bind(this)
+    this.updateAnnotation = this.updateAnnotation.bind(this)
+    this.rewriteDrawStyles = this.rewriteDrawStyles.bind(this)
   }
 
   initMap (el) {
@@ -36,7 +41,14 @@ class Map extends React.Component {
         dragRotate: false
       })
 
-      const Draw = this.draw = new MapboxDraw()
+      const Draw = this.draw = new MapboxDraw({
+        userProperties: true,
+        displayControlsDefault: false,
+        controls: {
+          polygon: true,
+          trash: true
+        }
+      })
       map.addControl(Draw)
 
       this._validator = new ValidatorControl({ task: null })
@@ -70,6 +82,17 @@ class Map extends React.Component {
             'fill-opacity': ['case', ['==', ['feature-state', 'hover'], 1], 0.3, 0]
           }
         })
+        map.addSource('imagery', {
+          type: 'raster',
+          tiles: [
+            `https://tiles.rasterfoundry.com/${this.props.projectId}/{z}/{x}/{y}?token=${config.sessionToken}`
+          ]
+        })
+        map.addLayer({
+          id: 'imagery',
+          type: 'raster',
+          source: 'imagery'
+        }, 'gl-draw-polygon-fill-inactive.cold')
       })
     }
   }
@@ -87,11 +110,17 @@ class Map extends React.Component {
         task: this.props.selectedTask,
         annotations: this.props.annotations,
         verifyAnnotation: this.verifyAnnotation,
-        validateAnnotation: this.validateAnnotation,
+        updateAnnotation: this.updateAnnotation,
         labels: this.props.labels,
         validateGridAndAdvance: this.props.validateGridAndAdvance,
-        map: this.map
+        map: this.map,
+        drawLabel: this.props.drawLabel,
+        setDrawLabel: this.props.setDrawLabel
       })
+    }
+    if ((!isEqual(this.props.labels, prevProps.labels) && this.state.mapLoaded) ||
+      (this.props.labels.length && this.state.mapLoaded && !prevState.mapLoaded)) {
+      this.rewriteDrawStyles(this.props.labels)
     }
   }
 
@@ -116,8 +145,25 @@ class Map extends React.Component {
     this.draw.changeMode('direct_select', { featureId: id })
   }
 
-  validateAnnotation (id) {
-    this.props.validateAnnotation(id)
+  updateAnnotation (feature) {
+    this.draw.setFeatureProperty(feature.id, 'label', feature.properties.label)
+    this.props.updateAnnotation(feature)
+  }
+
+  rewriteDrawStyles (labels) {
+    const exp = [
+      'match',
+      ['string', ['get', 'user_label']]
+    ].concat(flatten(labels.map((label, i) => [label, LABEL_COLORS[i]])))
+      .concat(['#3bb2d0'])
+    styles.forEach(style => {
+      for (const property in style.paint) {
+        if (style.paint[property] === '#3bb2d0') {
+          this.map.setPaintProperty(`${style.id}.hot`, property, exp)
+          this.map.setPaintProperty(`${style.id}.cold`, property, exp)
+        }
+      }
+    })
   }
 }
 
@@ -127,9 +173,12 @@ if (config.environment !== 'production') {
     onDataReady: T.func,
     grid: T.object,
     selectedTask: T.object,
-    validateAnnotation: T.func,
+    updateAnnotation: T.func,
     labels: T.array,
-    validateGridAndAdvance: T.func
+    validateGridAndAdvance: T.func,
+    projectId: T.string,
+    drawLabel: T.string,
+    setDrawLabel: T.func
   }
 }
 

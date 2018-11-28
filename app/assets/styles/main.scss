@@ -1,5 +1,6 @@
 @charset "UTF-8";
 @import "sass/theme/high-contrast/app";
+@import "validator";
 
 #map, #modal-map, .modal-summary {
   display: flex;
@@ -10,20 +11,11 @@
 }
 
 #modal-map {
-  border: 1px solid $shade-light
+  border: 1px solid $shade-light;
 }
 
 .modal-body {
   flex-direction: row;
-}
-
-.map-item {
-  display: inline-block;
-  z-index: 950;
-  box-shadow: 1px 2px 2px $shade-light;
-  border-radius: 5px;
-  background-color: $white;
-  padding: 1em;
 }
 
 .disabled {
