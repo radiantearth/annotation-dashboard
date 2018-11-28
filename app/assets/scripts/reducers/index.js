@@ -14,7 +14,8 @@ const initial = {
   modal: true,
   grid: fc([]),
   selectedTaskId: null,
-  drawLabel: null
+  drawLabel: null,
+  labels: []
 }
 
 const reducer = (state = initial, action) => {
