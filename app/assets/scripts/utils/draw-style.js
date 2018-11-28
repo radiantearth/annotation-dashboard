@@ -1,4 +1,6 @@
-module.exports = [
+export const LABEL_COLORS = ['#0B5FBF', '#81C784', '#FFCA28', '#E57373', '#E69348']
+
+export const drawStyles = [
   {
     'id': 'gl-draw-polygon-fill-inactive',
     'type': 'fill',

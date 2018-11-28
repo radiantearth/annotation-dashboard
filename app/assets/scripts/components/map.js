@@ -11,10 +11,9 @@ import flatten from 'lodash.flatten'
 
 import config from '../config'
 import { cartoStyle } from '../utils/map'
-import styles from '../utils/draw-style'
+import { drawStyles, LABEL_COLORS } from '../utils/draw-style'
 import ValidatorControl from './validator'
-
-const LABEL_COLORS = ['#0B5FBF', '#81C784', '#FFCA28', '#E57373', '#E69348']
+import LabelLegendControl from './label-legend'
 
 class Map extends React.Component {
   constructor () {
@@ -53,6 +52,9 @@ class Map extends React.Component {
 
       this._validator = new ValidatorControl({ task: null })
       map.addControl(this._validator, 'top-left')
+
+      this._labelLegend = new LabelLegendControl({ labels: [] })
+      map.addControl(this._labelLegend, 'bottom-left')
 
       window.map = map
       window.draw = Draw
@@ -121,6 +123,7 @@ class Map extends React.Component {
     if ((!isEqual(this.props.labels, prevProps.labels) && this.state.mapLoaded) ||
       (this.props.labels.length && this.state.mapLoaded && !prevState.mapLoaded)) {
       this.rewriteDrawStyles(this.props.labels)
+      this._labelLegend._render({ labels: this.props.labels })
     }
   }
 
@@ -156,7 +159,7 @@ class Map extends React.Component {
       ['string', ['get', 'user_label']]
     ].concat(flatten(labels.map((label, i) => [label, LABEL_COLORS[i]])))
       .concat(['#3bb2d0'])
-    styles.forEach(style => {
+    drawStyles.forEach(style => {
       for (const property in style.paint) {
         if (style.paint[property] === '#3bb2d0') {
           this.map.setPaintProperty(`${style.id}.hot`, property, exp)

@@ -21,3 +21,27 @@
     .radio { margin-bottom: 0.25em; }
   }
 }
+
+.label-legend {
+  max-width: 250px;
+  header {
+    h1 {
+      font-size: 1.2em;
+      margin-top: 0.5em;
+    }
+  }
+  ul {
+    padding-left: 0px;
+    list-style-type: none;
+  }
+  li {
+    font-size: 1.1em;
+    & > span {
+      vertical-align: text-top;
+      display: inline-block;
+      height: 1.5em;
+      width: 1.5em;
+      margin-right: 0.6em;
+    }
+  }
+}
