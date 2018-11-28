@@ -57,7 +57,7 @@ gulp.task('default', ['clean'], function () {
   gulp.start('build');
 });
 
-gulp.task('serve', ['vendorScripts', 'javascript', 'styles'], function () {
+gulp.task('serve', ['vendorScripts', 'javascript', 'styles', 'fonts'], function () {
   browserSync({
     port: 3000,
     server: {
@@ -159,37 +159,11 @@ gulp.task('vendorScripts', function () {
     .pipe(reload({stream: true}));
 });
 
-// /////////////////////////////////////////////////////////////////////////////
-// ------------------------- Collecticon tasks -------------------------------//
-// --------------------- (Font generation related) ---------------------------//
-// ---------------------------------------------------------------------------//
-gulp.task('collecticons', function (done) {
-  var args = [
-    'node_modules/collecticons-processor/bin/collecticons.js',
-    'compile',
-    'app/assets/graphics/collecticons/',
-    '--font-embed',
-    '--font-dest', 'app/assets/fonts',
-    '--font-name', 'Collecticons',
-    '--font-types', 'woff',
-    '--style-format', 'sass',
-    '--style-dest', 'app/assets/styles/core/',
-    '--style-name', 'collecticons',
-    '--class-name', 'collecticon',
-    '--author-name', 'Development Seed',
-    '--author-url', 'https://developmentseed.org/',
-    '--no-preview'
-  ];
-
-  return cp.spawn('node', args, {stdio: 'inherit'})
-    .on('close', done);
-});
-
 // //////////////////////////////////////////////////////////////////////////////
 // --------------------------- Helper tasks -----------------------------------//
 // ----------------------------------------------------------------------------//
 
-gulp.task('build', ['vendorScripts', 'javascript', 'collecticons'], function () {
+gulp.task('build', ['vendorScripts', 'javascript', 'fonts'], function () {
   gulp.start(['html', 'images', 'extras'], function () {
     return gulp.src('dist/**/*')
       .pipe($.size({title: 'build', gzip: true}))
@@ -258,6 +232,7 @@ gulp.task('extras', function () {
   return gulp.src([
     'app/**/*',
     '!app/*.html',
+    '!app/assets/fonts/**/*',
     '!app/assets/graphics/**',
     '!app/assets/vendor/**',
     '!app/assets/styles/**',
@@ -265,4 +240,10 @@ gulp.task('extras', function () {
   ], {
     dot: true
   }).pipe(gulp.dest('dist'));
+});
+
+gulp.task('fonts', function () {
+  return gulp.src('app/assets/fonts/**/*')
+    .pipe(gulp.dest('.tmp/assets/fonts'))
+    .pipe(gulp.dest('dist/assets/fonts'));
 });
