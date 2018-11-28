@@ -6,7 +6,7 @@ import config from '../config'
 // Configure Auth0 lock
 export const lock = new Auth0Lock(config.AUTH0_CLIENT_ID, config.AUTH0_DOMAIN, {
   auth: {
-    redirectUrl: config.REDIRECT_URL,
+    redirectUrl: window.location.origin,
     responseType: 'token id_token'
   },
   theme: {
@@ -77,4 +77,8 @@ export const isTokenExpired = () => {
     return false
   }
   return !(date.valueOf() > new Date().valueOf() + offsetSeconds * 1000)
+}
+
+export const isAuthenticated = () => {
+  return !isTokenExpired()
 }

@@ -6,37 +6,11 @@ import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 
 import { environment, appName, appDescription } from '../config'
-import * as AuthService from '../utils/auth'
 
 import PageHeader from '../components/page-header'
 import MetaTags from '../components/meta-tags'
 
 class App extends React.Component {
-  componentWillMount () {
-    // const { history, loginError, loginSuccess } = this.props
-    // Add callback for lock's `authenticated` event
-    AuthService.lock.on('authenticated', authResult => {
-      AuthService.lock.getUserInfo(authResult.accessToken, (error, profile) => {
-        if (error) {
-          console.log(error)
-          return
-          // return loginError(error)
-        }
-        AuthService.setToken(authResult.idToken) // static method
-        AuthService.setProfile(profile) // static method
-        // loginSuccess(profile);
-        this.props.history.push({ pathname: '/' })
-        AuthService.lock.hide()
-      })
-    })
-    // Add callback for lock's `authorization_error` event
-    AuthService.lock.on('authorization_error', error => {
-      // loginError(error);
-      console.log(error);
-      this.props.history.push({ pathname: '/' });
-    })
-  }
-
   render () {
     return (
       <Fragment>
