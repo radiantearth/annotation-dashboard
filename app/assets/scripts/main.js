@@ -33,7 +33,6 @@ const Root = () => (
       <Switch>
         <AuthRoute exact path='/' component={Home}/>
         <AuthRoute path='/project/:id' component={Project}/>
-        <Route path='/login' component={Login} />
         <Route path='*' component={UhOh} />
       </Switch>
     </Router>

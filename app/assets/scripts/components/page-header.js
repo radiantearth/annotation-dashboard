@@ -4,9 +4,15 @@ import { PropTypes as T } from 'prop-types'
 import { NavLink } from 'react-router-dom'
 
 import { environment } from '../config'
+import * as AuthService from '../utils/auth'
 
 export default class PageHeader extends React.PureComponent {
   render () {
+    const profile = AuthService.getProfile()
+    const ProfilePicture = profile.picture
+      ? <img className='avatar tiny' src={profile.picture} />
+      : <div className='avatar image-placeholder'></div>
+
     return (
       <header className='navbar'>
         <div className='navbar-section primary'>
@@ -22,13 +28,10 @@ export default class PageHeader extends React.PureComponent {
         </div>
         <div className='navbar-section secondary'>
           <nav>
-            <rf-navbar-search className='form-group all-in-one'>
-            </rf-navbar-search>
-            <div ng-if='$ctrl.authService.isLoggedIn' className='dropdown-my-account'>
+            <div className='dropdown-my-account dropdown'>
               <a>
-                <img ng-if='$ctrl.authService.getProfile().picture' className='avatar tiny' ng-src='{{$ctrl.authService.getProfile().picture}}' />
-                <div className='avatar image-placeholder' ng-if='$ctrl.authService.getProfile() && !$ctrl.authService.getProfile().picture'></div>
-                <span className='username'>{/* $ctrl.authService.getProfile().nickname */}</span>
+                {ProfilePicture}
+                <span className='username'>{profile.nickname}</span>
                 <i className='icon-caret-down'></i>
               </a>
               <ul className='dropdown-menu dropdown-menu-right' aria-labelledby='dLabel'>

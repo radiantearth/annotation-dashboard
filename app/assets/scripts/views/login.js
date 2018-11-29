@@ -24,12 +24,9 @@ export default class Login extends React.Component {
       console.log(error)
       history.push({ pathname: '/' })
     })
-    window.AuthService = AuthService
 
     if (!AuthService.isAuthenticated()) {
       AuthService.login()
-    } else {
-      this.props.history.push('/')
     }
   }
 

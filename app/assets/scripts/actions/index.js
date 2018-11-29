@@ -1,6 +1,7 @@
 'use strict'
 import fetch from 'isomorphic-fetch'
 import config from '../config'
+import * as AuthService from '../utils/auth'
 
 export const REQUEST_PROJECTS = 'REQUEST_PROJECTS'
 export const RECEIVE_PROJECTS = 'RECEIVE_PROJECTS'
