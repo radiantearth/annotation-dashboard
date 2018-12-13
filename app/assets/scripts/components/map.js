@@ -161,7 +161,7 @@ class Map extends React.Component {
       .concat(['#3bb2d0'])
     drawStyles.forEach(style => {
       for (const property in style.paint) {
-        if (style.paint[property] === '#3bb2d0') {
+        if (style.paint[property] === '#3bb2d0' || style.paint[property] === '#fbb03b') {
           this.map.setPaintProperty(`${style.id}.hot`, property, exp)
           this.map.setPaintProperty(`${style.id}.cold`, property, exp)
         }

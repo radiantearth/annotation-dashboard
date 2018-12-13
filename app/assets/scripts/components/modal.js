@@ -105,11 +105,13 @@ class Modal extends React.Component {
               <div className='modal-body'>
                 <div id='modal-map' ref={this.initMap.bind(this)}></div>
                 <section className='modal-summary'>
-                  <input type='range' min={10} max={16} defaultValue={13} onChange={this.onSliderChange}/>
-                  <span id='summary-text'>
+                  <p id='summary-text'>
                     This validation project contains <strong>{grid.features.length}</strong> grid cells with between <strong>{Math.min(...intersections)}-{Math.max(...intersections)}</strong> features per grid cell
-                  </span>
-                  <button type='button' className={c('btn btn-primary', { disabled: !grid.features.length })} onClick={() => this.props.onClick(this.state.grid)}>Set Grid</button>
+                  </p>
+                  <input type='range' min={10} max={16} defaultValue={13} onChange={this.onSliderChange}/>
+                  <div className='modal-submit'>
+                    <button type='button' className={c('btn btn-primary', { disabled: !grid.features.length })} onClick={() => this.props.onClick(this.state.grid)}>Set Grid</button>
+                  </div>
                 </section>
               </div>
               <div className='modal-footer'></div>
