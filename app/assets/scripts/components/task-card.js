@@ -13,7 +13,7 @@ class TaskCard extends React.Component {
         onClick={this.props.onClick}
         onMouseEnter={this.props.onEnter}
         onMouseLeave={this.props.onLeave}>
-        Task {this.props.index}, {this.props.task.properties.status}
+        Task {this.props.index} <i className='icon-check' style={{color: this.props.task.properties.status === 'validated' ? '#0B5FBF' : '#ccd4dc'}}></i>
       </div>
     )
   }

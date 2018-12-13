@@ -19,7 +19,12 @@ class Panel extends React.Component {
     const tasks = this.props.grid.features.sort((a, b) => a.id - b.id)
     return (
       <section className='sidebar'>
-        <div className='sidebar-header'>Tasks: {tasks.filter(t => t.properties.status === 'validated').length} of {tasks.length} complete</div>
+        <div className='sidebar-header'>
+          Tasks: {tasks.filter(t => t.properties.status === 'validated').length} of {tasks.length} complete
+          <div className='project-submit'>
+            <button type='button' className='btn btn-primary'>Save Project</button>
+          </div>
+        </div>
         <div className='list-group'>
           {tasks.map((task, i) => {
             return <TaskCard
