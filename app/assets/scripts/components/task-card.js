@@ -2,14 +2,14 @@
 
 import React from 'react'
 import { PropTypes as T } from 'prop-types'
-// import c from 'classnames'
+import c from 'classnames'
 import { environment } from '../config'
 
 class TaskCard extends React.Component {
   render () {
     return (
       <div
-        className='list-group-item'
+        className={c('list-group-item', { 'active': this.props.selectedTask && this.props.selectedTask.id === this.props.task.id })}
         onClick={this.props.onClick}
         onMouseEnter={this.props.onEnter}
         onMouseLeave={this.props.onLeave}>
@@ -25,7 +25,8 @@ if (environment !== 'production') {
     onLeave: T.func,
     onEnter: T.func,
     task: T.object,
-    index: T.number
+    index: T.number,
+    selectedTask: T.object
   }
 }
 

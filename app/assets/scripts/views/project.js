@@ -49,11 +49,13 @@ class Project extends React.Component {
             annotations={this.props.annotations}
             grid={this.props.grid}
             selectTask={this.selectTask}
+            selectedTask={this.props.selectedTask}
           />
           <Map
             annotations={this.props.annotations}
             onDataReady={this.setMap}
             grid={this.props.grid}
+            selectTask={this.selectTask}
             selectedTask={this.props.selectedTask}
             updateAnnotation={this.updateAnnotation}
             labels={this.props.labels}

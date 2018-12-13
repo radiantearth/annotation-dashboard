@@ -16,6 +16,7 @@ class Panel extends React.Component {
   }
 
   render () {
+    const { selectedTask } = this.props
     const tasks = this.props.grid.features.sort((a, b) => a.id - b.id)
     return (
       <section className='sidebar'>
@@ -30,6 +31,7 @@ class Panel extends React.Component {
             return <TaskCard
               key={task.properties.tile.join('-')}
               task={task}
+              selectedTask={selectedTask}
               index={i + 1}
               onClick={this.onClick.bind(this, task)}
               onEnter={this.hoverTask.bind(this, task.id, 1)}
@@ -58,7 +60,8 @@ if (environment !== 'production') {
     dispatch: T.func,
     grid: T.object,
     getMap: T.func,
-    selectTask: T.func
+    selectTask: T.func,
+    selectedTask: T.object
   }
 }
 

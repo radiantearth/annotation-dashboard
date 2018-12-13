@@ -15,6 +15,9 @@ import { drawStyles, LABEL_COLORS } from '../utils/draw-style'
 import ValidatorControl from './validator'
 import LabelLegendControl from './label-legend'
 
+// TODO: remove global variable
+let hoveredStateId = null
+
 class Map extends React.Component {
   constructor () {
     super()
@@ -95,6 +98,30 @@ class Map extends React.Component {
           type: 'raster',
           source: 'imagery'
         }, 'gl-draw-polygon-fill-inactive.cold')
+
+        map.on('mousemove', 'grid-fill', (e) => {
+          if (e.features.length > 0) {
+            if (hoveredStateId) {
+              map.setFeatureState({source: 'grid', id: hoveredStateId}, {hover: 0})
+            }
+            hoveredStateId = e.features[0].id
+            map.setFeatureState({source: 'grid', id: hoveredStateId}, {hover: 1})
+          }
+        })
+
+        map.on('mouseleave', 'grid-fill', (e) => {
+          if (hoveredStateId) {
+            map.setFeatureState({source: 'grid', id: hoveredStateId}, {hover: 0})
+          }
+          hoveredStateId = null
+        })
+
+        map.on('click', 'grid-fill', (e) => {
+          if (e.features.length > 0) {
+            const task = e.features[0]
+            this.props.selectTask(task)
+          }
+        })
       })
     }
   }
@@ -175,6 +202,7 @@ if (config.environment !== 'production') {
     annotations: T.array,
     onDataReady: T.func,
     grid: T.object,
+    selectTask: T.func,
     selectedTask: T.object,
     updateAnnotation: T.func,
     labels: T.array,
