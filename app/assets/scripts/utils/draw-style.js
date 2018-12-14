@@ -18,7 +18,7 @@ export const drawStyles = [
   {
     'id': 'gl-draw-polygon-fill-active',
     'type': 'fill',
-    'filter': ['all', ['==', 'active', 'true'], ['==', '$type', 'Polygon']],
+    'filter': ['all', ['==', 'active', 'true'], ['==', '$type', 'Polygon'], ['!=', 'mode', 'draw_polygon']],
     'paint': {
       'fill-color': '#fbb03b',
       'fill-outline-color': '#fbb03b',
@@ -56,7 +56,7 @@ export const drawStyles = [
   {
     'id': 'gl-draw-polygon-stroke-active',
     'type': 'line',
-    'filter': ['all', ['==', 'active', 'true'], ['==', '$type', 'Polygon']],
+    'filter': ['all', ['==', 'active', 'true'], ['==', '$type', 'Polygon'], ['!=', 'mode', 'draw_polygon']],
     'layout': {
       'line-cap': 'round',
       'line-join': 'round'
@@ -96,7 +96,7 @@ export const drawStyles = [
       'line-join': 'round'
     },
     'paint': {
-      'line-color': '#fbb03b',
+      'line-color': 'black',
       'line-dasharray': [0.2, 2],
       'line-width': 2
     }
@@ -120,7 +120,8 @@ export const drawStyles = [
     'filter': ['all',
       ['==', 'meta', 'vertex'],
       ['==', '$type', 'Point'],
-      ['!=', 'mode', 'static']
+      ['!=', 'mode', 'static'],
+      ['!=', 'mode', 'draw_polygon']
     ],
     'paint': {
       'circle-radius': 3,
@@ -224,6 +225,44 @@ export const drawStyles = [
     'paint': {
       'circle-radius': 5,
       'circle-color': '#404040'
+    }
+  },
+  {
+    'id': 'gl-draw-polygon-stroke-active-draw-polygon',
+    'type': 'line',
+    'filter': ['all', ['==', 'active', 'true'], ['==', '$type', 'Polygon'], ['==', 'mode', 'draw_polygon']],
+    'layout': {
+      'line-cap': 'round',
+      'line-join': 'round'
+    },
+    'paint': {
+      'line-color': 'black',
+      'line-dasharray': [0.2, 2],
+      'line-width': 2
+    }
+  },
+  {
+    'id': 'gl-draw-polygon-fill-active-draw-polygon',
+    'type': 'fill',
+    'filter': ['all', ['==', 'active', 'true'], ['==', '$type', 'Polygon'], ['!=', 'mode', 'draw_polygon']],
+    'paint': {
+      'fill-color': 'black',
+      'fill-outline-color': 'black',
+      'fill-opacity': 0.1
+    }
+  },
+  {
+    'id': 'gl-draw-polygon-and-line-vertex-inactive-draw-polygon',
+    'type': 'circle',
+    'filter': ['all',
+      ['==', 'meta', 'vertex'],
+      ['==', '$type', 'Point'],
+      ['!=', 'mode', 'static'],
+      ['==', 'mode', 'draw_polygon']
+    ],
+    'paint': {
+      'circle-radius': 3,
+      'circle-color': 'black'
     }
   }
 ]
