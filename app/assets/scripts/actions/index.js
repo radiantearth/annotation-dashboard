@@ -20,6 +20,7 @@ export const SELECT_TASK = 'SELECT_TASK'
 export const UPDATE_ANNOTATION = 'UPDATE_ANNOTATION'
 export const VALIDATE_GRID = 'VALIDATE_GRID'
 export const SET_DRAW_LABEL = 'SET_DRAW_LABEL'
+export const APPEND_ANNOTATION = 'APPEND_ANNOTATION'
 
 export function requestProjects () {
   return { type: REQUEST_PROJECTS }
@@ -79,6 +80,10 @@ export function validateGrid (id) {
 
 export function setDrawLabel (label) {
   return { type: SET_DRAW_LABEL, data: label }
+}
+
+export function appendAnnotation (feature) {
+  return { type: APPEND_ANNOTATION, data: feature }
 }
 
 // Fetcher function

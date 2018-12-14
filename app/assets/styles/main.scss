@@ -76,6 +76,9 @@ input[type=range]:focus::-webkit-slider-runnable-track {
     position: absolute;
     right: 1em;
   }
+  &.task-feature {
+    padding-left: 2em;
+  }
 }
 
 .sidebar-header {

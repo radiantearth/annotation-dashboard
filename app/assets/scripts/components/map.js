@@ -119,8 +119,9 @@ class Map extends React.Component {
           hoveredStateId = null
         })
 
+        // only select when no task is selected, otherwise this messes with map interactions
         map.on('click', 'grid-fill', e => {
-          if (e.features.length > 0) {
+          if (e.features.length > 0 && !this.props.selectedTask) {
             const task = e.features[0]
             this.props.selectTask(task)
           }
@@ -128,7 +129,15 @@ class Map extends React.Component {
 
         map.on('draw.create', e => {
           e.features.forEach(f => {
+            // update on the map
             this.draw.setFeatureProperty(f.id, 'label', this.props.drawLabel)
+            // also in our store
+            f.properties = {
+              label: this.props.drawLabel,
+              tile: this.props.selectedTask.id,
+              validated: true
+            }
+            setTimeout(() => this.props.appendAnnotation(f), 0)
           })
         })
       })
@@ -233,7 +242,8 @@ if (config.environment !== 'production') {
     validateGridAndAdvance: T.func,
     projectId: T.string,
     drawLabel: T.string,
-    setDrawLabel: T.func
+    setDrawLabel: T.func,
+    appendAnnotation: T.func
   }
 }
 

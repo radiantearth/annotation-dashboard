@@ -36,6 +36,7 @@ class Panel extends React.Component {
               onClick={this.onClick.bind(this, task)}
               onEnter={this.hoverTask.bind(this, task.id, 1)}
               onLeave={this.hoverTask.bind(this, task.id, 0)}
+              taskAnnotations={this.props.annotations.filter(a => a.properties.tile === +task.properties.tile.join(''))}
             />
           })}
         </div>
@@ -61,7 +62,8 @@ if (environment !== 'production') {
     grid: T.object,
     getMap: T.func,
     selectTask: T.func,
-    selectedTask: T.object
+    selectedTask: T.object,
+    annotations: T.array
   }
 }
 

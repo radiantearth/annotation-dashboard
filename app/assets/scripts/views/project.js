@@ -12,7 +12,7 @@ import Panel from '../components/panel'
 import Modal from '../components/modal'
 
 import { fetchAnnotations, updateModal, setGrid, selectTask, fetchLabels,
-  updateAnnotation, validateGrid, setDrawLabel } from '../actions'
+  updateAnnotation, validateGrid, setDrawLabel, appendAnnotation } from '../actions'
 
 class Project extends React.Component {
   constructor () {
@@ -25,6 +25,7 @@ class Project extends React.Component {
     this.updateAnnotation = this.updateAnnotation.bind(this)
     this.validateGridAndAdvance = this.validateGridAndAdvance.bind(this)
     this.setDrawLabel = this.setDrawLabel.bind(this)
+    this.appendAnnotation = this.appendAnnotation.bind(this)
   }
 
   componentDidMount () {
@@ -63,6 +64,7 @@ class Project extends React.Component {
             projectId={projectId}
             drawLabel={this.props.drawLabel}
             setDrawLabel={this.setDrawLabel}
+            appendAnnotation={this.appendAnnotation}
           />
         </div>
       </App>
@@ -102,6 +104,10 @@ class Project extends React.Component {
 
   setDrawLabel (label) {
     this.props.dispatch(setDrawLabel(label))
+  }
+
+  appendAnnotation (feature) {
+    this.props.dispatch(appendAnnotation(feature))
   }
 }
 
