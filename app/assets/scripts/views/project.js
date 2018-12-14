@@ -84,6 +84,7 @@ class Project extends React.Component {
 
   selectTask (task) {
     this.getMap().fitBounds(bbox(task.geometry), { padding: 50 })
+    this.getMap().setFeatureState({source: 'grid', id: task.id}, {hover: 0})
     this.props.dispatch(selectTask(task.id))
   }
 

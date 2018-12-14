@@ -46,6 +46,7 @@ class Map extends React.Component {
       const Draw = this.draw = new MapboxDraw({
         userProperties: true,
         displayControlsDefault: false,
+        styles: drawStyles,
         controls: {
           polygon: true,
           trash: true
@@ -99,36 +100,45 @@ class Map extends React.Component {
           source: 'imagery'
         }, 'gl-draw-polygon-fill-inactive.cold')
 
-        map.on('mousemove', 'grid-fill', (e) => {
-          if (e.features.length > 0) {
-            if (hoveredStateId) {
-              map.setFeatureState({source: 'grid', id: hoveredStateId}, {hover: 0})
+        map.on('mousemove', 'grid-fill', e => {
+          if (!this.props.selectedTask) {
+            if (e.features.length > 0) {
+              if (hoveredStateId) {
+                map.setFeatureState({source: 'grid', id: hoveredStateId}, {hover: 0})
+              }
+              hoveredStateId = e.features[0].id
+              map.setFeatureState({source: 'grid', id: hoveredStateId}, {hover: 1})
             }
-            hoveredStateId = e.features[0].id
-            map.setFeatureState({source: 'grid', id: hoveredStateId}, {hover: 1})
           }
         })
 
-        map.on('mouseleave', 'grid-fill', (e) => {
+        map.on('mouseleave', 'grid-fill', e => {
           if (hoveredStateId) {
             map.setFeatureState({source: 'grid', id: hoveredStateId}, {hover: 0})
           }
           hoveredStateId = null
         })
 
-        map.on('click', 'grid-fill', (e) => {
+        map.on('click', 'grid-fill', e => {
           if (e.features.length > 0) {
             const task = e.features[0]
             this.props.selectTask(task)
           }
+        })
+
+        map.on('draw.create', e => {
+          e.features.forEach(f => {
+            this.draw.setFeatureProperty(f.id, 'label', this.props.drawLabel)
+          })
         })
       })
     }
   }
 
   componentDidUpdate (prevProps, prevState) {
+    const mapLoad = this.state.mapLoaded && !prevState.mapLoaded
     if ((this.props.annotations.length !== prevProps.annotations.length && this.state.mapLoaded) ||
-      (this.props.annotations.length && this.state.mapLoaded && !prevState.mapLoaded)) {
+      (this.props.annotations.length && mapLoad)) {
       this.displayAnnotations(this.props.annotations)
     }
     if (!isEqual(this.props.grid, prevProps.grid)) {
@@ -151,6 +161,20 @@ class Map extends React.Component {
       (this.props.labels.length && this.state.mapLoaded && !prevState.mapLoaded)) {
       this.rewriteDrawStyles(this.props.labels)
       this._labelLegend._render({ labels: this.props.labels })
+    }
+    const labelChange = this.props.drawLabel !== prevProps.drawLabel
+    const labelReady = this.props.labels.length && this.props.drawLabel
+    if ((labelChange && labelReady && this.state.mapLoaded) ||
+      (labelReady && mapLoad)) {
+      const color = LABEL_COLORS[this.props.labels.findIndex(l => l === this.props.drawLabel)]
+      drawStyles.forEach(style => {
+        for (const property in style.paint) {
+          if (style.paint[property] === 'black') {
+            this.map.setPaintProperty(`${style.id}.hot`, property, color)
+            this.map.setPaintProperty(`${style.id}.cold`, property, color)
+          }
+        }
+      })
     }
   }
 
@@ -183,9 +207,9 @@ class Map extends React.Component {
   rewriteDrawStyles (labels) {
     const exp = [
       'match',
-      ['string', ['get', 'user_label']]
+      ['to-string', ['get', 'user_label']]
     ].concat(flatten(labels.map((label, i) => [label, LABEL_COLORS[i]])))
-      .concat(['#3bb2d0'])
+      .concat(['pink'])
     drawStyles.forEach(style => {
       for (const property in style.paint) {
         if (style.paint[property] === '#3bb2d0' || style.paint[property] === '#fbb03b') {
