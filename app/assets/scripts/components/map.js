@@ -137,8 +137,19 @@ class Map extends React.Component {
               tile: this.props.selectedTask.id,
               validated: true
             }
-            setTimeout(() => this.props.appendAnnotation(f), 0)
+            setTimeout(() => this.props.appendAnnotation(f), 10)
           })
+        })
+
+        map.on('draw.selectionchange', e => {
+          if (!e.features.length) return
+          // fires when something already in our store is selected
+          if (this.props.annotations.map(a => a.id).includes(e.features[0].id)) {
+            e.features[0].properties.validated = false
+            // TODO: are there cases where the thing we are editing isn't in the selected task
+            e.features[0].properties.tile = this.props.selectedTask.id
+            setTimeout(() => this.props.updateAnnotation(e.features[0]), 0)
+          }
         })
       })
     }
