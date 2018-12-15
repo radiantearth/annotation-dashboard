@@ -13,6 +13,7 @@ class Panel extends React.Component {
     super()
     this.onClick = this.onClick.bind(this)
     this.hoverTask = this.hoverTask.bind(this)
+    this.taskAnnotationClick = this.taskAnnotationClick.bind(this)
   }
 
   render () {
@@ -37,6 +38,7 @@ class Panel extends React.Component {
               onEnter={this.hoverTask.bind(this, task.id, 1)}
               onLeave={this.hoverTask.bind(this, task.id, 0)}
               taskAnnotations={this.props.annotations.filter(a => a.properties.tile === +task.properties.tile.join(''))}
+              taskAnnotationClick={this.taskAnnotationClick}
             />
           })}
         </div>
@@ -54,6 +56,11 @@ class Panel extends React.Component {
       id
     }, { hover })
   }
+
+  taskAnnotationClick (annotation) {
+    annotation.properties.validated = false
+    this.props.updateAnnotation(annotation)
+  }
 }
 
 if (environment !== 'production') {
@@ -63,7 +70,8 @@ if (environment !== 'production') {
     getMap: T.func,
     selectTask: T.func,
     selectedTask: T.object,
-    annotations: T.array
+    annotations: T.array,
+    updateAnnotation: T.array
   }
 }
 

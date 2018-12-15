@@ -19,7 +19,13 @@ class TaskCard extends React.Component {
           Task {this.props.index} <i className='icon-check' style={{color: validated ? '#0B5FBF' : '#ccd4dc'}}></i>
         </div>
         { active ? this.props.taskAnnotations.map(ta => {
-          return <div key={ta.id} className={c('list-group-item', 'task-feature')}>{ta.properties.label} <i className='icon-check' style={{color: ta.properties.validated ? '#0B5FBF' : '#ccd4dc'}}></i></div>
+          return <div
+            key={ta.id}
+            className={c('list-group-item', 'task-feature')}
+            onClick={() => this.props.taskAnnotationClick(ta)}
+          >
+            {ta.properties.label} <i className='icon-check' style={{color: ta.properties.validated ? '#0B5FBF' : '#ccd4dc'}}></i>
+          </div>
         }) : ''}
       </Fragment>
     )
@@ -34,7 +40,8 @@ if (environment !== 'production') {
     task: T.object,
     index: T.number,
     selectedTask: T.object,
-    taskAnnotations: T.array
+    taskAnnotations: T.array,
+    taskAnnotationClick: T.func
   }
 }
 
