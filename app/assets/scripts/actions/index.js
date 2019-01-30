@@ -22,6 +22,9 @@ export const VALIDATE_GRID = 'VALIDATE_GRID'
 export const SET_DRAW_LABEL = 'SET_DRAW_LABEL'
 export const APPEND_ANNOTATION = 'APPEND_ANNOTATION'
 
+export const REQUEST_SAVE = 'REQUEST_SAVE'
+export const RECEIVE_SAVE = 'RECEIVE_SAVE'
+
 export function requestProjects () {
   return { type: REQUEST_PROJECTS }
 }
@@ -84,6 +87,24 @@ export function setDrawLabel (label) {
 
 export function appendAnnotation (feature) {
   return { type: APPEND_ANNOTATION, data: feature }
+}
+
+export function requestSave () {
+  return { type: REQUEST_SAVE }
+}
+
+export function receiveSave () {
+  return { type: RECEIVE_SAVE }
+}
+
+export function saveProject (project) {
+  const saveOptions = {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(project)
+  }
+  return fetchDispatchFactory(config.CATALOG_API, saveOptions, requestSave, receiveSave)
 }
 
 // Fetcher function
