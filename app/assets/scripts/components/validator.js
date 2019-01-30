@@ -83,7 +83,7 @@ class Validator extends React.Component {
         </div>
       )
     } else {
-      this.props.map.fitBounds(bbox(task.geometry), { padding: 50 })
+      this.props.map.fitBounds(bbox(task.geometry), { padding: 150 })
       return (
         <div className='validator map-item'>
           <header>
