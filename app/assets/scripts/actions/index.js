@@ -21,6 +21,10 @@ export const SELECT_TASK = 'SELECT_TASK'
 export const UPDATE_ANNOTATION = 'UPDATE_ANNOTATION'
 export const VALIDATE_GRID = 'VALIDATE_GRID'
 export const SET_DRAW_LABEL = 'SET_DRAW_LABEL'
+export const APPEND_ANNOTATION = 'APPEND_ANNOTATION'
+
+export const REQUEST_SAVE = 'REQUEST_SAVE'
+export const RECEIVE_SAVE = 'RECEIVE_SAVE'
 
 export function requestProjects () {
   return { type: REQUEST_PROJECTS }
@@ -51,7 +55,7 @@ export function requestLabels () {
 }
 
 export function receiveLabels (labels, error = null) {
-  return { type: RECEIVE_LABELS, data: labels.concat(['test label 1', 'test label 2']), error, receivedAt: Date.now() }
+  return { type: RECEIVE_LABELS, data: labels.concat(['Test Label 1', 'Test Label 2']), error, receivedAt: Date.now() }
 }
 
 export function fetchLabels (projectID, query = {}) {
@@ -80,6 +84,28 @@ export function validateGrid (id) {
 
 export function setDrawLabel (label) {
   return { type: SET_DRAW_LABEL, data: label }
+}
+
+export function appendAnnotation (feature) {
+  return { type: APPEND_ANNOTATION, data: feature }
+}
+
+export function requestSave () {
+  return { type: REQUEST_SAVE }
+}
+
+export function receiveSave () {
+  return { type: RECEIVE_SAVE }
+}
+
+export function saveProject (project) {
+  const saveOptions = {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(project)
+  }
+  return fetchDispatchFactory(config.CATALOG_API, saveOptions, requestSave, receiveSave)
 }
 
 // Fetcher function

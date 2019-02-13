@@ -11,10 +11,12 @@ import flatten from 'lodash.flatten'
 
 import config from '../config'
 import { cartoStyle } from '../utils/map'
-import styles from '../utils/draw-style'
+import { drawStyles, LABEL_COLORS } from '../utils/draw-style'
 import ValidatorControl from './validator'
+import LabelLegendControl from './label-legend'
 
-const LABEL_COLORS = ['#0B5FBF', '#81C784', '#FFCA28', '#E57373', '#E69348']
+// TODO: remove global variable
+let hoveredStateId = null
 
 class Map extends React.Component {
   constructor () {
@@ -44,6 +46,7 @@ class Map extends React.Component {
       const Draw = this.draw = new MapboxDraw({
         userProperties: true,
         displayControlsDefault: false,
+        styles: drawStyles,
         controls: {
           polygon: true,
           trash: true
@@ -53,6 +56,9 @@ class Map extends React.Component {
 
       this._validator = new ValidatorControl({ task: null })
       map.addControl(this._validator, 'top-left')
+
+      this._labelLegend = new LabelLegendControl({ labels: [] })
+      map.addControl(this._labelLegend, 'bottom-left')
 
       window.map = map
       window.draw = Draw
@@ -93,13 +99,66 @@ class Map extends React.Component {
           type: 'raster',
           source: 'imagery'
         }, 'gl-draw-polygon-fill-inactive.cold')
+
+        map.on('mousemove', 'grid-fill', e => {
+          if (!this.props.selectedTask) {
+            if (e.features.length > 0) {
+              if (hoveredStateId) {
+                map.setFeatureState({source: 'grid', id: hoveredStateId}, {hover: 0})
+              }
+              hoveredStateId = e.features[0].id
+              map.setFeatureState({source: 'grid', id: hoveredStateId}, {hover: 1})
+            }
+          }
+        })
+
+        map.on('mouseleave', 'grid-fill', e => {
+          if (hoveredStateId) {
+            map.setFeatureState({source: 'grid', id: hoveredStateId}, {hover: 0})
+          }
+          hoveredStateId = null
+        })
+
+        // only select when no task is selected, otherwise this messes with map interactions
+        map.on('click', 'grid-fill', e => {
+          if (e.features.length > 0 && !this.props.selectedTask) {
+            const task = e.features[0]
+            this.props.selectTask(task)
+          }
+        })
+
+        map.on('draw.create', e => {
+          e.features.forEach(f => {
+            // update on the map
+            this.draw.setFeatureProperty(f.id, 'label', this.props.drawLabel)
+            // also in our store
+            f.properties = {
+              label: this.props.drawLabel,
+              tile: this.props.selectedTask.id,
+              validated: true
+            }
+            setTimeout(() => this.props.appendAnnotation(f), 10)
+          })
+        })
+
+        map.on('draw.selectionchange', e => {
+          if (!e.features.length) return
+          // fires when something already in our store is selected
+          if (this.props.annotations.map(a => a.id).includes(e.features[0].id)) {
+            e.features[0].properties.validated = false
+            // TODO: are there cases where the thing we are editing isn't in the selected task
+            e.features[0].properties.tile = this.props.selectedTask.id
+            setTimeout(() => this.props.updateAnnotation(e.features[0]), 0)
+          }
+        })
       })
     }
   }
 
   componentDidUpdate (prevProps, prevState) {
+    const mapLoad = this.state.mapLoaded && !prevState.mapLoaded
     if ((this.props.annotations.length !== prevProps.annotations.length && this.state.mapLoaded) ||
-      (this.props.annotations.length && this.state.mapLoaded && !prevState.mapLoaded)) {
+      (this.props.annotations.length && mapLoad)) {
       this.displayAnnotations(this.props.annotations)
     }
     if (!isEqual(this.props.grid, prevProps.grid)) {
@@ -121,6 +180,21 @@ class Map extends React.Component {
     if ((!isEqual(this.props.labels, prevProps.labels) && this.state.mapLoaded) ||
       (this.props.labels.length && this.state.mapLoaded && !prevState.mapLoaded)) {
       this.rewriteDrawStyles(this.props.labels)
+      this._labelLegend._render({ labels: this.props.labels })
+    }
+    const labelChange = this.props.drawLabel !== prevProps.drawLabel
+    const labelReady = this.props.labels.length && this.props.drawLabel
+    if ((labelChange && labelReady && this.state.mapLoaded) ||
+      (labelReady && mapLoad)) {
+      const color = LABEL_COLORS[this.props.labels.findIndex(l => l === this.props.drawLabel)]
+      drawStyles.forEach(style => {
+        for (const property in style.paint) {
+          if (style.paint[property] === 'black') {
+            this.map.setPaintProperty(`${style.id}.hot`, property, color)
+            this.map.setPaintProperty(`${style.id}.cold`, property, color)
+          }
+        }
+      })
     }
   }
 
@@ -153,12 +227,12 @@ class Map extends React.Component {
   rewriteDrawStyles (labels) {
     const exp = [
       'match',
-      ['string', ['get', 'user_label']]
+      ['to-string', ['get', 'user_label']]
     ].concat(flatten(labels.map((label, i) => [label, LABEL_COLORS[i]])))
-      .concat(['#3bb2d0'])
-    styles.forEach(style => {
+      .concat(['pink'])
+    drawStyles.forEach(style => {
       for (const property in style.paint) {
-        if (style.paint[property] === '#3bb2d0') {
+        if (style.paint[property] === '#3bb2d0' || style.paint[property] === '#fbb03b') {
           this.map.setPaintProperty(`${style.id}.hot`, property, exp)
           this.map.setPaintProperty(`${style.id}.cold`, property, exp)
         }
@@ -172,13 +246,15 @@ if (config.environment !== 'production') {
     annotations: T.array,
     onDataReady: T.func,
     grid: T.object,
+    selectTask: T.func,
     selectedTask: T.object,
     updateAnnotation: T.func,
     labels: T.array,
     validateGridAndAdvance: T.func,
     projectId: T.string,
     drawLabel: T.string,
-    setDrawLabel: T.func
+    setDrawLabel: T.func,
+    appendAnnotation: T.func
   }
 }
 

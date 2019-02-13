@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import bbox from '@turf/bbox'
 
 import { environment } from '../config'
+import { propsToProject } from '../utils/utils'
 
 import App from './app'
 import Map from '../components/map'
@@ -12,7 +13,8 @@ import Panel from '../components/panel'
 import Modal from '../components/modal'
 
 import { fetchAnnotations, updateModal, setGrid, selectTask, fetchLabels,
-  updateAnnotation, validateGrid, setDrawLabel } from '../actions'
+  updateAnnotation, validateGrid, setDrawLabel, appendAnnotation,
+  saveProject } from '../actions'
 
 class Project extends React.Component {
   constructor () {
@@ -25,6 +27,8 @@ class Project extends React.Component {
     this.updateAnnotation = this.updateAnnotation.bind(this)
     this.validateGridAndAdvance = this.validateGridAndAdvance.bind(this)
     this.setDrawLabel = this.setDrawLabel.bind(this)
+    this.appendAnnotation = this.appendAnnotation.bind(this)
+    this.saveProject = this.saveProject.bind(this)
   }
 
   componentDidMount () {
@@ -49,11 +53,15 @@ class Project extends React.Component {
             annotations={this.props.annotations}
             grid={this.props.grid}
             selectTask={this.selectTask}
+            selectedTask={this.props.selectedTask}
+            updateAnnotation={this.updateAnnotation}
+            saveProject={this.saveProject}
           />
           <Map
             annotations={this.props.annotations}
             onDataReady={this.setMap}
             grid={this.props.grid}
+            selectTask={this.selectTask}
             selectedTask={this.props.selectedTask}
             updateAnnotation={this.updateAnnotation}
             labels={this.props.labels}
@@ -61,6 +69,7 @@ class Project extends React.Component {
             projectId={projectId}
             drawLabel={this.props.drawLabel}
             setDrawLabel={this.setDrawLabel}
+            appendAnnotation={this.appendAnnotation}
           />
         </div>
       </App>
@@ -82,6 +91,7 @@ class Project extends React.Component {
 
   selectTask (task) {
     this.getMap().fitBounds(bbox(task.geometry), { padding: 50 })
+    this.getMap().setFeatureState({source: 'grid', id: task.id}, {hover: 0})
     this.props.dispatch(selectTask(task.id))
   }
 
@@ -99,6 +109,15 @@ class Project extends React.Component {
 
   setDrawLabel (label) {
     this.props.dispatch(setDrawLabel(label))
+  }
+
+  appendAnnotation (feature) {
+    this.props.dispatch(appendAnnotation(feature))
+  }
+
+  async saveProject () {
+    const project = await propsToProject(this.props)
+    this.props.dispatch(saveProject(project))
   }
 }
 

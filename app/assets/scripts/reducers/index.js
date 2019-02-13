@@ -5,7 +5,7 @@ import cloneDeep from 'lodash.clonedeep'
 
 import { REQUEST_PROJECTS, RECEIVE_PROJECTS, REQUEST_ANNOTATIONS,
   RECEIVE_ANNOTATIONS, REQUEST_LABELS, RECEIVE_LABELS, UPDATE_MODAL, SET_GRID,
-  SELECT_TASK, UPDATE_ANNOTATION, VALIDATE_GRID, SET_DRAW_LABEL } from '../actions'
+  SELECT_TASK, UPDATE_ANNOTATION, VALIDATE_GRID, SET_DRAW_LABEL, APPEND_ANNOTATION } from '../actions'
 
 const initial = {
   projects: null,
@@ -101,6 +101,8 @@ const reducer = (state = initial, action) => {
       return { ...state, grid: fc(features) }
     case SET_DRAW_LABEL:
       return { ...state, drawLabel: action.data }
+    case APPEND_ANNOTATION:
+      return { ...state, annotations: state.annotations.concat(action.data) }
     default:
       return state
   }

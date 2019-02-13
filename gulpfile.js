@@ -74,13 +74,11 @@ gulp.task('serve', ['vendorScripts', 'javascript', 'styles', 'fonts'], function 
   // watch for changes
   gulp.watch([
     'app/*.html',
-    'app/assets/graphics/**/*',
-    '!app/assets/graphics/collecticons/**/*'
+    'app/assets/graphics/**/*'
   ]).on('change', reload);
 
   gulp.watch('app/assets/styles/**/*.scss', ['styles']);
   gulp.watch('package.json', ['vendorScripts']);
-  gulp.watch('app/assets/graphics/collecticons/**', ['collecticons']);
 });
 
 gulp.task('clean', function () {
