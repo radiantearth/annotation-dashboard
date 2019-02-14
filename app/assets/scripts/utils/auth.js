@@ -7,7 +7,8 @@ import config from '../config'
 export const lock = new Auth0Lock(config.AUTH0_CLIENT_ID, config.AUTH0_DOMAIN, {
   auth: {
     redirectUrl: window.location.origin,
-    responseType: 'token id_token'
+    responseType: 'token id_token',
+    connection: 'RadiantEarth'
   },
   theme: {
     primaryColor: '#738FFC'

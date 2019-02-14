@@ -10,6 +10,7 @@ import isEqual from 'lodash.isequal'
 import flatten from 'lodash.flatten'
 
 import config from '../config'
+import * as AuthService from '../utils/auth'
 import { cartoStyle } from '../utils/map'
 import { drawStyles, LABEL_COLORS } from '../utils/draw-style'
 import ValidatorControl from './validator'
@@ -91,7 +92,7 @@ class Map extends React.Component {
         map.addSource('imagery', {
           type: 'raster',
           tiles: [
-            `https://tiles.rasterfoundry.com/${this.props.projectId}/{z}/{x}/{y}?token=${config.sessionToken}`
+            `https://tiles.rasterfoundry.com/${this.props.projectId}/{z}/{x}/{y}?token=${AuthService.getToken()}`
           ]
         })
         map.addLayer({

@@ -112,7 +112,7 @@ export function saveProject (project) {
 function getAndDispatch (url, requestFn, receiveFn) {
   return fetchDispatchFactory(url, {
     headers: {
-      'Authorization': `Bearer ${config.sessionToken}`
+      'Authorization': `Bearer ${AuthService.getToken()}`
     }
   }, requestFn, receiveFn)
 }
