@@ -47,7 +47,8 @@ if (environment !== 'production') {
     className: T.string,
     location: T.object,
     children: T.node,
-    modal: T.node
+    modal: T.node,
+    history: T.object
   }
 }
 

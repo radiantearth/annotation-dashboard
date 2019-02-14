@@ -57,7 +57,7 @@ gulp.task('default', ['clean'], function () {
   gulp.start('build');
 });
 
-gulp.task('serve', ['vendorScripts', 'javascript', 'styles'], function () {
+gulp.task('serve', ['vendorScripts', 'javascript', 'styles', 'fonts'], function () {
   browserSync({
     port: 3000,
     server: {
@@ -230,6 +230,7 @@ gulp.task('extras', function () {
   return gulp.src([
     'app/**/*',
     '!app/*.html',
+    '!app/assets/fonts/**/*',
     '!app/assets/graphics/**',
     '!app/assets/vendor/**',
     '!app/assets/styles/**',

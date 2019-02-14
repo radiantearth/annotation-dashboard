@@ -9,7 +9,7 @@ import MetaTags from '../components/meta-tags'
 export default class UhOh extends React.Component {
   render () {
     return (
-      <App className='page--methodology'>
+      <App className='page--404'>
         <MetaTags title={`Not found — ${appName}`} />
         <article className='inpage inpage--uhoh'>
           <header className='inpage__header'>
