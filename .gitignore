@@ -2,3 +2,4 @@ node_modules/
 .DS_Store
 .tmp
 app/assets/scripts/config/local.js
+dist
