@@ -18,7 +18,7 @@ import * as AuthService from './utils/auth'
 // instead of the traditional pattern of redirecting to the login component,
 // we render it without updating the url/location. Then we can easily get the
 // user to the correct page after authenticating
-const AuthRoute = ({ component: Component, ...rest }) => (
+const AuthRoute = ({ component: Component, ...rest }) => ( // eslint-disable-line
   <Route {...rest} render={(props) => (
     AuthService.isAuthenticated()
       ? <Component {...props} />
