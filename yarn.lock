@@ -4470,6 +4470,16 @@ gulp-sourcemaps@^2.4.1:
     strip-bom-string "1.X"
     through2 "2.X"
 
+gulp-uglify-es@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.npmjs.org/gulp-uglify-es/-/gulp-uglify-es-1.0.4.tgz#59ee0d5ea98c1e09c6eaa58c8b018a6ad33f48d4"
+  dependencies:
+    o-stream "^0.2.2"
+    plugin-error "^1.0.1"
+    terser "^3.7.5"
+    vinyl "^2.1.0"
+    vinyl-sourcemaps-apply "^0.2.1"
+
 gulp-uglify@^3.0.0:
   version "3.0.1"
   resolved "https://registry.npmjs.org/gulp-uglify/-/gulp-uglify-3.0.1.tgz#8d3eee466521bea6b10fd75dff72adf8b7ea2d97"
@@ -6414,6 +6424,10 @@ number-is-nan@^1.0.0:
   version "1.0.1"
   resolved "https://registry.npmjs.org/number-is-nan/-/number-is-nan-1.0.1.tgz#097b602b53422a522c1afb8790318336941a011d"
 
+o-stream@^0.2.2:
+  version "0.2.2"
+  resolved "https://registry.npmjs.org/o-stream/-/o-stream-0.2.2.tgz#7fe03af870b8f9537af33b312b381b3034ab410f"
+
 oauth-sign@~0.3.0:
   version "0.3.0"
   resolved "https://registry.npmjs.org/oauth-sign/-/oauth-sign-0.3.0.tgz#cb540f93bb2b22a7d5941691a288d60e8ea9386e"
@@ -8172,6 +8186,13 @@ source-map-resolve@^0.5.0, source-map-resolve@^0.5.2:
     source-map-url "^0.4.0"
     urix "^0.1.0"
 
+source-map-support@~0.5.9:
+  version "0.5.10"
+  resolved "https://registry.npmjs.org/source-map-support/-/source-map-support-0.5.10.tgz#2214080bc9d51832511ee2bab96e3c2f9353120c"
+  dependencies:
+    buffer-from "^1.0.0"
+    source-map "^0.6.0"
+
 source-map-url@^0.4.0:
   version "0.4.0"
   resolved "https://registry.npmjs.org/source-map-url/-/source-map-url-0.4.0.tgz#3e935d7ddd73631b97659956d55128e87b5084a3"
@@ -8735,6 +8756,14 @@ ternary-stream@^2.0.1:
     fork-stream "^0.0.4"
     merge-stream "^1.0.0"
     through2 "^2.0.1"
+
+terser@^3.7.5:
+  version "3.16.1"
+  resolved "https://registry.npmjs.org/terser/-/terser-3.16.1.tgz#5b0dd4fa1ffd0b0b43c2493b2c364fd179160493"
+  dependencies:
+    commander "~2.17.1"
+    source-map "~0.6.1"
+    source-map-support "~0.5.9"
 
 tether@^1.4.5:
   version "1.4.5"
