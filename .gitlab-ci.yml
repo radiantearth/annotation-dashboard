@@ -17,6 +17,7 @@ lint:
 build:
   stage: build
   script:
+    - yarn install
     - yarn build
   artifacts:
     paths:
