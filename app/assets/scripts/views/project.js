@@ -14,7 +14,7 @@ import Modal from '../components/modal'
 
 import { fetchAnnotations, updateModal, setGrid, selectTask, fetchLabels,
   updateAnnotation, validateGrid, setDrawLabel, appendAnnotation,
-  saveProject } from '../actions'
+  saveProject, fetchProject } from '../actions'
 
 class Project extends React.Component {
   constructor () {
@@ -35,6 +35,7 @@ class Project extends React.Component {
     const { match } = this.props
     this.props.dispatch(fetchAnnotations(match.params.id))
     this.props.dispatch(fetchLabels(match.params.id))
+    this.props.dispatch(fetchProject(match.params.id))
   }
 
   render () {
@@ -43,6 +44,7 @@ class Project extends React.Component {
       ? <Modal
         onClick={this.closeModal}
         annotations={this.props.annotations}
+        project={this.props.project}
       />
       : false
     return (
@@ -128,7 +130,8 @@ function mapStateToProps (state) {
     grid: state.grid,
     selectedTask: state.grid && state.selectedTaskId ? state.grid.features.find(f => f.id === state.selectedTaskId) : null,
     labels: state.labels,
-    drawLabel: state.drawLabel
+    drawLabel: state.drawLabel,
+    project: state.project
   }
 }
 
@@ -141,7 +144,8 @@ if (environment !== 'production') {
     grid: T.object,
     selectedTask: T.object,
     labels: T.array,
-    drawLabel: T.string
+    drawLabel: T.string,
+    project: T.object
   }
 }
 

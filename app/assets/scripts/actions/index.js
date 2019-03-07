@@ -26,6 +26,9 @@ export const APPEND_ANNOTATION = 'APPEND_ANNOTATION'
 export const REQUEST_SAVE = 'REQUEST_SAVE'
 export const RECEIVE_SAVE = 'RECEIVE_SAVE'
 
+export const REQUEST_PROJECT = 'REQUEST_PROJECT'
+export const RECEIVE_PROJECT = 'RECEIVE_PROJECT'
+
 export function requestProjects () {
   return { type: REQUEST_PROJECTS }
 }
@@ -36,6 +39,18 @@ export function receiveProjects (projects, error = null) {
 
 export function fetchProjects (query = {}) {
   return getAndDispatch(`${config.api}/projects`, requestProjects, receiveProjects)
+}
+
+export function requestProject () {
+  return { type: REQUEST_PROJECT }
+}
+
+export function receiveProject (project, error = null) {
+  return { type: RECEIVE_PROJECT, data: project, error, receivedAt: Date.now() }
+}
+
+export function fetchProject (id) {
+  return getAndDispatch(`${config.api}/projects/${id}`, requestProject, receiveProject)
 }
 
 export function requestAnnotations () {

@@ -5,7 +5,8 @@ import cloneDeep from 'lodash.clonedeep'
 
 import { REQUEST_PROJECTS, RECEIVE_PROJECTS, REQUEST_ANNOTATIONS,
   RECEIVE_ANNOTATIONS, REQUEST_LABELS, RECEIVE_LABELS, UPDATE_MODAL, SET_GRID,
-  SELECT_TASK, UPDATE_ANNOTATION, VALIDATE_GRID, SET_DRAW_LABEL, APPEND_ANNOTATION } from '../actions'
+  SELECT_TASK, UPDATE_ANNOTATION, VALIDATE_GRID, SET_DRAW_LABEL,
+  REQUEST_PROJECT, RECEIVE_PROJECT, APPEND_ANNOTATION } from '../actions'
 
 const initial = {
   projects: null,
@@ -15,11 +16,13 @@ const initial = {
   grid: fc([]),
   selectedTaskId: null,
   drawLabel: null,
-  labels: []
+  labels: [],
+  project: {}
 }
 
 const reducer = (state = initial, action) => {
   switch (action.type) {
+    case REQUEST_PROJECT:
     case REQUEST_PROJECTS:
     case REQUEST_ANNOTATIONS:
     case REQUEST_LABELS:
@@ -67,6 +70,19 @@ const reducer = (state = initial, action) => {
       } else {
         state.labels = action.data
         state.drawLabel = action.data[0]
+      }
+      return state
+    case RECEIVE_PROJECT:
+      state = {
+        ...state,
+        fetching: false,
+        fetched: true
+      }
+
+      if (action.error) {
+        state.error = action.error
+      } else {
+        state.project = action.data
       }
       return state
     case UPDATE_MODAL:

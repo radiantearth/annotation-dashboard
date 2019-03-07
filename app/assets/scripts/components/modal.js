@@ -12,6 +12,7 @@ import intersect from '@turf/intersect'
 import { featureCollection as fc, feature } from '@turf/helpers'
 
 import { environment } from '../config'
+import { validationDescription } from '../utils/copy'
 
 class Modal extends React.Component {
   constructor () {
@@ -91,6 +92,10 @@ class Modal extends React.Component {
 
   render () {
     const { intersections, grid } = this.state
+    // description is empty while loading, use default if not present on project
+    const description = this.props.project.hasOwnProperty('extras')
+      ? (this.props.project.extras && this.props.project.extras.validationDescription) || validationDescription
+      : ''
     return (
       <Fragment>
         <div className='modal fade in'>
@@ -105,7 +110,7 @@ class Modal extends React.Component {
               <div className='modal-body'>
                 <div id='modal-map' ref={this.initMap.bind(this)}></div>
                 <section className='modal-summary'>
-                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                  <p>{description}</p>
                   <p id='summary-text'>
                     This validation project contains <strong>{grid.features.length}</strong> grid cells with between <strong>{Math.min(...intersections)}-{Math.max(...intersections)}</strong> features per grid cell
                   </p>
@@ -159,7 +164,8 @@ class Modal extends React.Component {
 if (environment !== 'production') {
   Modal.propTypes = {
     onClick: T.func,
-    annotations: T.array
+    annotations: T.array,
+    project: T.object
   }
 }
 
