@@ -11,8 +11,8 @@ import { tileToGeoJSON } from '@mapbox/tilebelt'
 import intersect from '@turf/intersect'
 import { featureCollection as fc, feature } from '@turf/helpers'
 
-import { environment } from '../config'
-import { validationDescription } from '../utils/copy'
+import { environment } from '../../config'
+import { validationDescription } from '../../utils/copy'
 
 class Modal extends React.Component {
   constructor () {

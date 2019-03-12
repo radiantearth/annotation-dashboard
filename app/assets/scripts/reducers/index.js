@@ -2,22 +2,25 @@
 import {featureCollection as fc} from '@turf/helpers'
 import intersect from '@turf/intersect'
 import cloneDeep from 'lodash.clonedeep'
+import { SETUP_MODAL } from '../utils/constants'
 
 import { REQUEST_PROJECTS, RECEIVE_PROJECTS, REQUEST_ANNOTATIONS,
   RECEIVE_ANNOTATIONS, REQUEST_LABELS, RECEIVE_LABELS, UPDATE_MODAL, SET_GRID,
   SELECT_TASK, UPDATE_ANNOTATION, VALIDATE_GRID, SET_DRAW_LABEL,
-  REQUEST_PROJECT, RECEIVE_PROJECT, APPEND_ANNOTATION } from '../actions'
+  REQUEST_PROJECT, RECEIVE_PROJECT, APPEND_ANNOTATION, REQUEST_EXPORTS,
+  RECEIVE_EXPORTS } from '../actions'
 
 const initial = {
   projects: null,
   annotations: null,
   setUp: {},
-  modal: true,
+  modal: SETUP_MODAL,
   grid: fc([]),
   selectedTaskId: null,
   drawLabel: null,
   labels: [],
-  project: {}
+  project: {},
+  exports: []
 }
 
 const reducer = (state = initial, action) => {
@@ -26,6 +29,7 @@ const reducer = (state = initial, action) => {
     case REQUEST_PROJECTS:
     case REQUEST_ANNOTATIONS:
     case REQUEST_LABELS:
+    case REQUEST_EXPORTS:
       return {
         ...state,
         error: null,
@@ -83,6 +87,19 @@ const reducer = (state = initial, action) => {
         state.error = action.error
       } else {
         state.project = action.data
+      }
+      return state
+    case RECEIVE_EXPORTS:
+      state = {
+        ...state,
+        fetching: false,
+        fetched: true
+      }
+
+      if (action.error) {
+        state.error = action.error
+      } else {
+        state.exports = action.data.results
       }
       return state
     case UPDATE_MODAL:

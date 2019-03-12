@@ -29,6 +29,9 @@ export const RECEIVE_SAVE = 'RECEIVE_SAVE'
 export const REQUEST_PROJECT = 'REQUEST_PROJECT'
 export const RECEIVE_PROJECT = 'RECEIVE_PROJECT'
 
+export const REQUEST_EXPORTS = 'REQUEST_EXPORTS'
+export const RECEIVE_EXPORTS = 'RECEIVE_EXPORTS'
+
 export function requestProjects () {
   return { type: REQUEST_PROJECTS }
 }
@@ -77,8 +80,20 @@ export function fetchLabels (projectID, query = {}) {
   return getAndDispatch(`${config.api}/projects/${projectID}/labels/`, requestLabels, receiveLabels)
 }
 
-export function updateModal (bool) {
-  return { type: UPDATE_MODAL, data: bool }
+export function requestExports () {
+  return { type: REQUEST_EXPORTS }
+}
+
+export function receiveExports (exports, error = null) {
+  return { type: RECEIVE_EXPORTS, data: exports, error, receivedAt: Date.now() }
+}
+
+export function fetchExports (id) {
+  return getAndDispatch(`${config.api}/exports?project=${id}`, requestExports, receiveExports)
+}
+
+export function updateModal (type) {
+  return { type: UPDATE_MODAL, data: type }
 }
 
 export function setGrid (grid) {
