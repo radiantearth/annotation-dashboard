@@ -25,7 +25,7 @@ async function getScenes (id) {
 }
 
 // takes project props object and convert to payload for saving
-export async function propsToProject (props, exp) {
+export async function propsToProject (props, exports) {
   const id = props.match.params.id
   const scenes = await getScenes(id)
   const project = await getProject(id)
@@ -36,6 +36,6 @@ export async function propsToProject (props, exp) {
     'validated area': bbox(props.grid),
     'scene-metadata': { results: scenes.results },
     labels: fc(props.annotations),
-    source: exports.count > 0 ? `${exp.exportOptions.source}/export.tif` : null
+    sources: exports.map(exp => `${exp.exportOptions.source}/export.tif`)
   }
 }

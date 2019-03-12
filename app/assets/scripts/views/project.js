@@ -57,6 +57,7 @@ class Project extends React.Component {
           onClick={this.closeModal}
           project={this.props.project}
           exports={this.props.exports}
+          saveProject={this.saveProject}
         />
     }
     return (
@@ -70,7 +71,6 @@ class Project extends React.Component {
             selectedTask={this.props.selectedTask}
             updateAnnotation={this.updateAnnotation}
             openSaveModal={this.openSaveModal}
-            saveProject={this.saveProject}
           />
           <Map
             annotations={this.props.annotations}
@@ -134,9 +134,10 @@ class Project extends React.Component {
     this.props.dispatch(appendAnnotation(feature))
   }
 
-  async saveProject (exp) {
-    const project = await propsToProject(this.props, exp)
+  async saveProject (exports) {
+    const project = await propsToProject(this.props, exports)
     this.props.dispatch(saveProject(project))
+    this.props.dispatch(updateModal(false))
   }
 }
 
