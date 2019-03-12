@@ -3,6 +3,7 @@
 import fetch from 'isomorphic-fetch'
 import config from '../config'
 import * as AuthService from '../utils/auth'
+import { LOCAL_PROJECTS } from '../utils/constants'
 
 export const REQUEST_PROJECTS = 'REQUEST_PROJECTS'
 export const RECEIVE_PROJECTS = 'RECEIVE_PROJECTS'
@@ -50,16 +51,19 @@ export function receiveProjects (projects, error = null) {
 export function fetchProjects () {
   return function (dispatch) {
     dispatch(requestProjects())
-    const ids = localStorage.getItem('label-gen.projects') || ''
-    ids.split(',').reduce((promiseChain, id) => {
-      return promiseChain.then(chainResults => {
-        return fetch(`${config.api}/projects/${id}`, fetchOptions).then(resp => resp.json()).then(project => {
-          return [ ...chainResults, project ]
+    const ids = localStorage.getItem(LOCAL_PROJECTS) || '' // comma-separated string
+    if (ids) {
+      ids.split(',').reduce((promiseChain, id) => {
+        return promiseChain.then(chainResults => {
+          return fetch(`${config.api}/projects/${id}`, fetchOptions).then(resp => resp.json()).then(project => {
+            return [ ...chainResults, project ]
+          })
         })
+      }, Promise.resolve([])).then(projects => {
+        dispatch(receiveProjects(projects))
       })
-    }, Promise.resolve([])).then(projects => {
-      dispatch(receiveProjects(projects))
-    })
+    }
+    dispatch(receiveProjects([]))
   }
 }
 

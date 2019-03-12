@@ -4,15 +4,18 @@ import { connect } from 'react-redux'
 import { PropTypes as T } from 'prop-types'
 
 import { environment } from '../config'
-
+import { LOCAL_PROJECTS } from '../utils/constants'
 import { fetchProjects } from '../actions'
 
 import App from './app'
 import ProjectCard from '../components/project-card'
+import AddProjectCard from '../components/add-project-card'
 
 class Home extends React.Component {
   componentDidMount () {
     this.props.dispatch(fetchProjects())
+    this.addProject = this.addProject.bind(this)
+    this.deleteProject = this.deleteProject.bind(this)
   }
 
   render () {
@@ -26,12 +29,13 @@ class Home extends React.Component {
                 <div className='flex-fill'></div>
               </div>
               <div className='pagination-count'>
-                Showing <strong>{1}</strong> - <strong>{this.props.projects.length}</strong> of <strong>{this.props.projects.length}</strong> projects
+                Showing <strong>{this.props.projects.length ? 1 : 0}</strong> - <strong>{this.props.projects.length}</strong> of <strong>{this.props.projects.length}</strong> projects
               </div>
               <div className='row stack-xs'>
                 {this.props.projects.map(project => {
-                  return <ProjectCard key={project.id} project={project} />
+                  return <ProjectCard key={project.id} project={project} deleteProject={this.deleteProject}/>
                 })}
+                <AddProjectCard addProject={this.addProject}/>
               </div>
             </div>
             <div className='column spacer'></div>
@@ -52,6 +56,19 @@ class Home extends React.Component {
         </div>
       </App>
     )
+  }
+
+  addProject (id) {
+    const projectIds = this.props.projects.map(p => p.id)
+    localStorage.setItem(LOCAL_PROJECTS, projectIds.concat([id]))
+    this.props.dispatch(fetchProjects())
+  }
+
+  deleteProject (e, id) {
+    e.preventDefault()
+    const projectIds = this.props.projects.map(p => p.id)
+    localStorage.setItem(LOCAL_PROJECTS, projectIds.filter(p => p !== id))
+    this.props.dispatch(fetchProjects())
   }
 }
 

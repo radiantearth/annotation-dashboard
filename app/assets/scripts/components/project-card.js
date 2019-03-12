@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import { environment } from '../config'
 
 const ProjectCard = props => {
-  const { project } = props
+  const { project, deleteProject } = props
   return (
     <div className='column-6 flex-display'>
       <div className='panel panel-off-white project-item'>
@@ -15,7 +15,7 @@ const ProjectCard = props => {
             <h4 className='project-title'>{project.name}</h4>
           </Link>
           <div className='project-actions'>
-            <a href='' onClick={() => {}}>
+            <a href='' onClick={(e) => deleteProject(e, project.id)}>
               <i className='icon-trash'></i>
               <span className='sr-only'>Delete</span>
             </a>
@@ -72,6 +72,7 @@ export default ProjectCard
 
 if (environment !== 'production') {
   ProjectCard.propTypes = {
-    project: T.object
+    project: T.object,
+    deleteProject: T.func
   }
 }
