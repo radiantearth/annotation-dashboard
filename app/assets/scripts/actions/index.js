@@ -1,3 +1,4 @@
+/* global localStorage */
 'use strict'
 import fetch from 'isomorphic-fetch'
 import config from '../config'
@@ -32,6 +33,12 @@ export const RECEIVE_PROJECT = 'RECEIVE_PROJECT'
 export const REQUEST_EXPORTS = 'REQUEST_EXPORTS'
 export const RECEIVE_EXPORTS = 'RECEIVE_EXPORTS'
 
+const fetchOptions = {
+  headers: {
+    'Authorization': `Bearer ${AuthService.getToken()}`
+  }
+}
+
 export function requestProjects () {
   return { type: REQUEST_PROJECTS }
 }
@@ -40,8 +47,20 @@ export function receiveProjects (projects, error = null) {
   return { type: RECEIVE_PROJECTS, data: projects, error, receivedAt: Date.now() }
 }
 
-export function fetchProjects (query = {}) {
-  return getAndDispatch(`${config.api}/projects`, requestProjects, receiveProjects)
+export function fetchProjects () {
+  return function (dispatch) {
+    dispatch(requestProjects())
+    const ids = localStorage.getItem('label-gen.projects') || ''
+    ids.split(',').reduce((promiseChain, id) => {
+      return promiseChain.then(chainResults => {
+        return fetch(`${config.api}/projects/${id}`, fetchOptions).then(resp => resp.json()).then(project => {
+          return [ ...chainResults, project ]
+        })
+      })
+    }, Promise.resolve([])).then(projects => {
+      dispatch(receiveProjects(projects))
+    })
+  }
 }
 
 export function requestProject () {
@@ -140,11 +159,7 @@ export function saveProject (project) {
 
 // Fetcher function
 function getAndDispatch (url, requestFn, receiveFn) {
-  return fetchDispatchFactory(url, {
-    headers: {
-      'Authorization': `Bearer ${AuthService.getToken()}`
-    }
-  }, requestFn, receiveFn)
+  return fetchDispatchFactory(url, fetchOptions, requestFn, receiveFn)
 }
 
 function fetchDispatchFactory (url, options, requestFn, receiveFn) {

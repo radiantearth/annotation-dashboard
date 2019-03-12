@@ -46,7 +46,7 @@ const reducer = (state = initial, action) => {
       if (action.error) {
         state.error = action.error
       } else {
-        state.projects = action.data.results
+        state.projects = action.data
       }
       return state
     case RECEIVE_ANNOTATIONS:

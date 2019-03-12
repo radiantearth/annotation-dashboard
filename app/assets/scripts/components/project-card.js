@@ -15,9 +15,9 @@ const ProjectCard = props => {
             <h4 className='project-title'>{project.name}</h4>
           </Link>
           <div className='project-actions'>
-            <a href=''>
-              <i className='icon-share'></i>
-              <span className='sr-only'>Annotate</span>
+            <a href='' onClick={() => {}}>
+              <i className='icon-trash'></i>
+              <span className='sr-only'>Delete</span>
             </a>
           </div>
           <div className='project-preview'>
