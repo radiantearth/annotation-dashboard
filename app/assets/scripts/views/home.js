@@ -5,7 +5,7 @@ import { PropTypes as T } from 'prop-types'
 
 import { environment } from '../config'
 import { LOCAL_PROJECTS } from '../utils/constants'
-import { fetchProjects } from '../actions'
+import { fetchProjects, addProject, deleteProject } from '../actions'
 
 import App from './app'
 import ProjectCard from '../components/project-card'
@@ -61,14 +61,14 @@ class Home extends React.Component {
   addProject (id) {
     const projectIds = this.props.projects.map(p => p.id)
     localStorage.setItem(LOCAL_PROJECTS, projectIds.concat([id]))
-    this.props.dispatch(fetchProjects())
+    this.props.dispatch(addProject(id))
   }
 
   deleteProject (e, id) {
     e.preventDefault()
     const projectIds = this.props.projects.map(p => p.id)
     localStorage.setItem(LOCAL_PROJECTS, projectIds.filter(p => p !== id))
-    this.props.dispatch(fetchProjects())
+    this.props.dispatch(deleteProject(id))
   }
 }
 

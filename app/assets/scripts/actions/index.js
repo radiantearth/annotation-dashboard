@@ -34,6 +34,9 @@ export const RECEIVE_PROJECT = 'RECEIVE_PROJECT'
 export const REQUEST_EXPORTS = 'REQUEST_EXPORTS'
 export const RECEIVE_EXPORTS = 'RECEIVE_EXPORTS'
 
+export const ADD_PROJECT = 'ADD_PROJECT'
+export const DELETE_PROJECT = 'DELETE_PROJECT'
+
 const fetchOptions = {
   headers: {
     'Authorization': `Bearer ${AuthService.getToken()}`
@@ -49,22 +52,26 @@ export function receiveProjects (projects, error = null) {
 }
 
 export function fetchProjects () {
-  return function (dispatch) {
+  return async function (dispatch) {
     dispatch(requestProjects())
     const ids = localStorage.getItem(LOCAL_PROJECTS) || '' // comma-separated string
-    if (ids) {
-      ids.split(',').reduce((promiseChain, id) => {
-        return promiseChain.then(chainResults => {
-          return fetch(`${config.api}/projects/${id}`, fetchOptions).then(resp => resp.json()).then(project => {
-            return [ ...chainResults, project ]
-          })
-        })
-      }, Promise.resolve([])).then(projects => {
-        dispatch(receiveProjects(projects))
-      })
-    }
-    dispatch(receiveProjects([]))
+    const projectPromises = ids.split(',').filter(Boolean)
+      .map(id => fetch(`${config.api}/projects/${id}`, fetchOptions).then(resp => resp.json()))
+    const projects = await Promise.all(projectPromises)
+    dispatch(receiveProjects(projects))
   }
+}
+
+export function addProject (id) {
+  return async function (dispatch) {
+    dispatch(requestProject())
+    const project = await fetch(`${config.api}/projects/${id}`, fetchOptions).then(resp => resp.json())
+    dispatch({ type: ADD_PROJECT, data: project })
+  }
+}
+
+export function deleteProject (id) {
+  return { type: DELETE_PROJECT, data: id }
 }
 
 export function requestProject () {

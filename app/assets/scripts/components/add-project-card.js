@@ -15,7 +15,7 @@ class AddProjectCard extends React.Component {
 
   render () {
     return (
-      <div className='column-6 flex-display'>
+      <div className='add-project column-6 flex-display'>
         <div className='panel panel-off-white project-item'>
           <div className='panel-body'>
             <div className='project-preview'>

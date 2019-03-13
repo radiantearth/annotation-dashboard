@@ -8,10 +8,10 @@ import { REQUEST_PROJECTS, RECEIVE_PROJECTS, REQUEST_ANNOTATIONS,
   RECEIVE_ANNOTATIONS, REQUEST_LABELS, RECEIVE_LABELS, UPDATE_MODAL, SET_GRID,
   SELECT_TASK, UPDATE_ANNOTATION, VALIDATE_GRID, SET_DRAW_LABEL,
   REQUEST_PROJECT, RECEIVE_PROJECT, APPEND_ANNOTATION, REQUEST_EXPORTS,
-  RECEIVE_EXPORTS } from '../actions'
+  RECEIVE_EXPORTS, ADD_PROJECT, DELETE_PROJECT } from '../actions'
 
 const initial = {
-  projects: null,
+  projects: [],
   annotations: null,
   setUp: {},
   modal: SETUP_MODAL,
@@ -136,6 +136,10 @@ const reducer = (state = initial, action) => {
       return { ...state, drawLabel: action.data }
     case APPEND_ANNOTATION:
       return { ...state, annotations: state.annotations.concat(action.data) }
+    case ADD_PROJECT:
+      return { ...state, projects: state.projects.concat(action.data) }
+    case DELETE_PROJECT:
+      return { ...state, projects: state.projects.filter(p => p.id !== action.data) }
     default:
       return state
   }
