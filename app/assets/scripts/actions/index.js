@@ -36,6 +36,7 @@ export const RECEIVE_EXPORTS = 'RECEIVE_EXPORTS'
 
 export const ADD_PROJECT = 'ADD_PROJECT'
 export const DELETE_PROJECT = 'DELETE_PROJECT'
+export const INVALIDATE_PROJECT = 'INVALIDATE_PROJECT'
 
 const fetchOptions = {
   headers: {
@@ -72,6 +73,10 @@ export function addProject (id) {
 
 export function deleteProject (id) {
   return { type: DELETE_PROJECT, data: id }
+}
+
+export function invalidateProject () {
+  return { type: INVALIDATE_PROJECT }
 }
 
 export function requestProject () {

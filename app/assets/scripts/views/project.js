@@ -16,7 +16,7 @@ import SaveModal from '../components/modals/save'
 
 import { fetchAnnotations, updateModal, setGrid, selectTask, fetchLabels,
   updateAnnotation, validateGrid, setDrawLabel, appendAnnotation,
-  saveProject, fetchProject, fetchExports } from '../actions'
+  saveProject, fetchProject, fetchExports, invalidateProject } from '../actions'
 
 class Project extends React.Component {
   constructor () {
@@ -40,6 +40,10 @@ class Project extends React.Component {
     this.props.dispatch(fetchLabels(match.params.id))
     this.props.dispatch(fetchProject(match.params.id))
     this.props.dispatch(fetchExports(match.params.id))
+  }
+
+  componentWillUnmount () {
+    this.props.dispatch(invalidateProject())
   }
 
   render () {
