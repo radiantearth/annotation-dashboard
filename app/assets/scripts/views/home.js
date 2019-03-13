@@ -25,7 +25,7 @@ class Home extends React.Component {
           <div className='row content stack-sm'>
             <div className='column-8'>
               <div className='dashboard-header'>
-                <h3>Projects</h3>
+                <h3>Label Validation Projects</h3>
                 <div className='flex-fill'></div>
               </div>
               <div className='pagination-count'>
@@ -42,7 +42,13 @@ class Home extends React.Component {
             <div className='column'>
               <div className='aside'>
                 <section>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                Welcome to the <strong>Radiant Earth Label Validation Tool</strong>.
+                This is a web-based tool to curate and catalogue satellite machine
+                learning training data. The tool takes input label data from the
+                Radiant Earth Platform Annotation API and loads it here, where
+                expert users like you can validate that the given labels correspond
+                to the satellite imagery. The data can then be saved in a STAC-compliant
+                label data catalog available at <a href="">https://api.radiant.earth/labels</a>
                 </section>
                 <section className='aside-footer'>
                   <h5>Help</h5>

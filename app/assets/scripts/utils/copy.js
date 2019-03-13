@@ -1,1 +1,1 @@
-export const validationDescription = 'Default validation description'
+export const validationDescription = 'Configure the project below and begin validating.'
