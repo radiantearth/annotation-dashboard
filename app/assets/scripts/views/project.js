@@ -6,15 +6,17 @@ import bbox from '@turf/bbox'
 
 import { environment } from '../config'
 import { propsToProject } from '../utils/utils'
+import { SAVE_MODAL, SETUP_MODAL } from '../utils/constants'
 
 import App from './app'
 import Map from '../components/map'
 import Panel from '../components/panel'
-import Modal from '../components/modal'
+import SetupModal from '../components/modals/setup'
+import SaveModal from '../components/modals/save'
 
 import { fetchAnnotations, updateModal, setGrid, selectTask, fetchLabels,
   updateAnnotation, validateGrid, setDrawLabel, appendAnnotation,
-  saveProject } from '../actions'
+  saveProject, fetchProject, fetchExports, invalidateProject } from '../actions'
 
 class Project extends React.Component {
   constructor () {
@@ -29,22 +31,39 @@ class Project extends React.Component {
     this.setDrawLabel = this.setDrawLabel.bind(this)
     this.appendAnnotation = this.appendAnnotation.bind(this)
     this.saveProject = this.saveProject.bind(this)
+    this.openSaveModal = this.openSaveModal.bind(this)
   }
 
   componentDidMount () {
     const { match } = this.props
     this.props.dispatch(fetchAnnotations(match.params.id))
     this.props.dispatch(fetchLabels(match.params.id))
+    this.props.dispatch(fetchProject(match.params.id))
+    this.props.dispatch(fetchExports(match.params.id))
+  }
+
+  componentWillUnmount () {
+    this.props.dispatch(invalidateProject())
   }
 
   render () {
     const projectId = this.props.match.params.id
-    const modal = this.props.modal
-      ? <Modal
-        onClick={this.closeModal}
-        annotations={this.props.annotations}
-      />
-      : false
+    let modal = false
+    switch (this.props.modal) {
+      case SETUP_MODAL:
+        modal = <SetupModal
+          onClick={this.closeModal}
+          annotations={this.props.annotations}
+          project={this.props.project} />
+        break
+      case SAVE_MODAL:
+        modal = <SaveModal
+          onClick={this.closeModal}
+          project={this.props.project}
+          exports={this.props.exports}
+          saveProject={this.saveProject}
+        />
+    }
     return (
       <App modal={modal}>
         <div className='container column-stretch container-not-scrollable'>
@@ -55,7 +74,7 @@ class Project extends React.Component {
             selectTask={this.selectTask}
             selectedTask={this.props.selectedTask}
             updateAnnotation={this.updateAnnotation}
-            saveProject={this.saveProject}
+            openSaveModal={this.openSaveModal}
           />
           <Map
             annotations={this.props.annotations}
@@ -76,6 +95,10 @@ class Project extends React.Component {
     )
   }
 
+  openSaveModal () {
+    this.props.dispatch(updateModal(SAVE_MODAL))
+  }
+
   setMap (map) {
     this.map = map
   }
@@ -86,7 +109,7 @@ class Project extends React.Component {
 
   closeModal (grid) {
     this.props.dispatch(updateModal(false))
-    this.props.dispatch(setGrid(grid))
+    if (grid) this.props.dispatch(setGrid(grid))
   }
 
   selectTask (task) {
@@ -115,9 +138,10 @@ class Project extends React.Component {
     this.props.dispatch(appendAnnotation(feature))
   }
 
-  async saveProject () {
-    const project = await propsToProject(this.props)
+  async saveProject (exports) {
+    const project = await propsToProject(this.props, exports)
     this.props.dispatch(saveProject(project))
+    this.props.dispatch(updateModal(false))
   }
 }
 
@@ -128,7 +152,9 @@ function mapStateToProps (state) {
     grid: state.grid,
     selectedTask: state.grid && state.selectedTaskId ? state.grid.features.find(f => f.id === state.selectedTaskId) : null,
     labels: state.labels,
-    drawLabel: state.drawLabel
+    drawLabel: state.drawLabel,
+    project: state.project,
+    exports: state.exports
   }
 }
 
@@ -137,11 +163,13 @@ if (environment !== 'production') {
     match: T.object,
     dispatch: T.func,
     annotations: T.array,
-    modal: T.bool,
+    modal: T.oneOfType([T.string, T.bool]),
     grid: T.object,
     selectedTask: T.object,
     labels: T.array,
-    drawLabel: T.string
+    drawLabel: T.string,
+    project: T.object,
+    exports: T.array
   }
 }
 

@@ -2,7 +2,6 @@
 
 import React from 'react'
 import { PropTypes as T } from 'prop-types'
-// import c from 'classnames'
 
 import { environment } from '../config'
 
@@ -14,7 +13,6 @@ class Panel extends React.Component {
     this.onClick = this.onClick.bind(this)
     this.hoverTask = this.hoverTask.bind(this)
     this.taskAnnotationClick = this.taskAnnotationClick.bind(this)
-    this.saveProject = this.saveProject.bind(this)
   }
 
   render () {
@@ -25,7 +23,7 @@ class Panel extends React.Component {
         <div className='sidebar-header'>
           Tasks: {tasks.filter(t => t.properties.status === 'validated').length} of {tasks.length} complete
           <div className='project-submit'>
-            <button onClick={this.saveProject} type='button' className='btn btn-primary'>Save Project</button>
+            <button onClick={this.props.openSaveModal} type='button' className='btn btn-primary'>Save Project</button>
           </div>
         </div>
         <div className='list-group'>
@@ -62,10 +60,6 @@ class Panel extends React.Component {
     annotation.properties.validated = false
     this.props.updateAnnotation(annotation)
   }
-
-  saveProject () {
-    this.props.saveProject()
-  }
 }
 
 if (environment !== 'production') {
@@ -77,7 +71,7 @@ if (environment !== 'production') {
     selectedTask: T.object,
     annotations: T.array,
     updateAnnotation: T.func,
-    saveProject: T.func
+    openSaveModal: T.func
   }
 }
 

@@ -25,6 +25,10 @@
   }
 }
 
+.save-summary {
+  flex-direction: column;
+}
+
 .modal-body {
   flex-direction: row;
 }
@@ -86,5 +90,31 @@ input[type=range]:focus::-webkit-slider-runnable-track {
   .project-submit {
     position: absolute;
     right: 1em;
+  }
+}
+
+.panel.project-item .panel-body {
+  padding: 0.5rem 2rem;
+}
+
+.aside {
+  font-size: 1.1em;
+  line-height: 1.3;
+}
+
+.project-id {
+  padding: 0.4em;
+}
+
+.pagination-count {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+.panel {
+  margin-bottom: 0;
+  .error {
+    color: $danger;
+    margin-left: 1rem;
   }
 }

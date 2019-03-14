@@ -2,27 +2,36 @@
 import {featureCollection as fc} from '@turf/helpers'
 import intersect from '@turf/intersect'
 import cloneDeep from 'lodash.clonedeep'
+import { SETUP_MODAL, LOCAL_PROJECTS } from '../utils/constants'
 
 import { REQUEST_PROJECTS, RECEIVE_PROJECTS, REQUEST_ANNOTATIONS,
   RECEIVE_ANNOTATIONS, REQUEST_LABELS, RECEIVE_LABELS, UPDATE_MODAL, SET_GRID,
-  SELECT_TASK, UPDATE_ANNOTATION, VALIDATE_GRID, SET_DRAW_LABEL, APPEND_ANNOTATION } from '../actions'
+  SELECT_TASK, UPDATE_ANNOTATION, VALIDATE_GRID, SET_DRAW_LABEL,
+  REQUEST_PROJECT, RECEIVE_PROJECT, APPEND_ANNOTATION, REQUEST_EXPORTS,
+  RECEIVE_EXPORTS, ADD_PROJECT, DELETE_PROJECT, INVALIDATE_PROJECT,
+  ADD_PROJECT_ERROR } from '../actions'
 
 const initial = {
-  projects: null,
+  projects: [],
   annotations: null,
   setUp: {},
-  modal: true,
+  modal: SETUP_MODAL,
   grid: fc([]),
   selectedTaskId: null,
   drawLabel: null,
-  labels: []
+  labels: [],
+  project: {},
+  exports: [],
+  addProjectError: ''
 }
 
 const reducer = (state = initial, action) => {
   switch (action.type) {
+    case REQUEST_PROJECT:
     case REQUEST_PROJECTS:
     case REQUEST_ANNOTATIONS:
     case REQUEST_LABELS:
+    case REQUEST_EXPORTS:
       return {
         ...state,
         error: null,
@@ -39,7 +48,7 @@ const reducer = (state = initial, action) => {
       if (action.error) {
         state.error = action.error
       } else {
-        state.projects = action.data.results
+        state.projects = action.data
       }
       return state
     case RECEIVE_ANNOTATIONS:
@@ -67,6 +76,32 @@ const reducer = (state = initial, action) => {
       } else {
         state.labels = action.data
         state.drawLabel = action.data[0]
+      }
+      return state
+    case RECEIVE_PROJECT:
+      state = {
+        ...state,
+        fetching: false,
+        fetched: true
+      }
+
+      if (action.error) {
+        state.error = action.error
+      } else {
+        state.project = action.data
+      }
+      return state
+    case RECEIVE_EXPORTS:
+      state = {
+        ...state,
+        fetching: false,
+        fetched: true
+      }
+
+      if (action.error) {
+        state.error = action.error
+      } else {
+        state.exports = action.data.results
       }
       return state
     case UPDATE_MODAL:
@@ -103,6 +138,18 @@ const reducer = (state = initial, action) => {
       return { ...state, drawLabel: action.data }
     case APPEND_ANNOTATION:
       return { ...state, annotations: state.annotations.concat(action.data) }
+    case ADD_PROJECT:
+      let projectIds = state.projects.map(p => p.id)
+      localStorage.setItem(LOCAL_PROJECTS, projectIds.concat(action.data.id))
+      return { ...state, projects: state.projects.concat(action.data) }
+    case DELETE_PROJECT:
+      projectIds = state.projects.map(p => p.id)
+      localStorage.setItem(LOCAL_PROJECTS, projectIds.filter(p => p !== action.data))
+      return { ...state, projects: state.projects.filter(p => p.id !== action.data) }
+    case INVALIDATE_PROJECT:
+      return { ...initial, projects: state.projects }
+    case ADD_PROJECT_ERROR:
+      return { ...state, addProjectError: action.data }
     default:
       return state
   }

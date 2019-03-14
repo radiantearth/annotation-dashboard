@@ -11,7 +11,8 @@ import { tileToGeoJSON } from '@mapbox/tilebelt'
 import intersect from '@turf/intersect'
 import { featureCollection as fc, feature } from '@turf/helpers'
 
-import { environment } from '../config'
+import { environment } from '../../config'
+import { validationDescription } from '../../utils/copy'
 
 class Modal extends React.Component {
   constructor () {
@@ -91,6 +92,10 @@ class Modal extends React.Component {
 
   render () {
     const { intersections, grid } = this.state
+    // description is empty while loading, use default if not present on project
+    const description = this.props.project.hasOwnProperty('extras')
+      ? (this.props.project.extras && this.props.project.extras.validationDescription) || validationDescription
+      : ''
     return (
       <Fragment>
         <div className='modal fade in'>
@@ -100,16 +105,23 @@ class Modal extends React.Component {
                 <button type='button' className={c('close', { disabled: !grid.features.length })} aria-label='Close' onClick={() => this.props.onClick(this.state.grid)}>
                   <span aria-hidden='true'>×</span>
                 </button>
-                <h4 className='modal-title'>Configure Project Validation</h4>
+                <h4 className='modal-title'>Configure Project</h4>
               </div>
               <div className='modal-body'>
                 <div id='modal-map' ref={this.initMap.bind(this)}></div>
                 <section className='modal-summary'>
-                  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-                  <p id='summary-text'>
-                    This validation project contains <strong>{grid.features.length}</strong> grid cells with between <strong>{Math.min(...intersections)}-{Math.max(...intersections)}</strong> features per grid cell
+                  <p><strong>Description:</strong> {description}</p>
+                  <hr />
+                  <p>
+                    Before correcting any labels, it helps to divide the project
+                    up into partial tasks. Use the slider below to change the size
+                    of the tasks.
+                    <span id='summary-text'>
+                      This project contains <strong>{grid.features.length}</strong> tasks with between <strong>{Math.min(...intersections)}-{Math.max(...intersections)}</strong> features per task.
+                    </span>
                   </p>
-                  <input type='range' min={10} max={16} defaultValue={13} onChange={this.onSliderChange}/>
+
+                  <input type='range' min={10} max={15} defaultValue={13} onChange={this.onSliderChange}/>
                   <div className='modal-submit'>
                     <button type='button' className={c('btn btn-primary', { disabled: !grid.features.length })} onClick={() => this.props.onClick(this.state.grid)}>Set Grid</button>
                   </div>
@@ -159,7 +171,8 @@ class Modal extends React.Component {
 if (environment !== 'production') {
   Modal.propTypes = {
     onClick: T.func,
-    annotations: T.array
+    annotations: T.array,
+    project: T.object
   }
 }
 
