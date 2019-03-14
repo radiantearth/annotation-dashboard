@@ -96,6 +96,19 @@ export function addProject (id) {
   }
 }
 
+export async function updateRemoteAnnotations (id, fc) {
+  const deleteOptions = Object.assign({}, fetchOptions(), {
+    method: 'DELETE'
+  })
+  const postOptions = {
+    method: 'POST',
+    headers: Object.assign({ 'Content-Type': 'application/json' }, fetchOptions().headers),
+    body: JSON.stringify(fc)
+  }
+  await fetch(`${config.api}/projects/${id}/annotations`, deleteOptions)
+  await fetch(`${config.api}/projects/${id}/annotations`, postOptions).then(resp => resp.json())
+}
+
 export function deleteProject (id) {
   return { type: DELETE_PROJECT, data: id }
 }

@@ -82,8 +82,10 @@ class Modal extends React.Component {
   componentDidUpdate (prevProps, prevState) {
     if (this.props.annotations && !this.state.annotationsAdded && this.state.mapLoaded) {
       this.setState({ annotationsAdded: true })
-      this.map.getSource('data').setData(fc(this.props.annotations))
-      this.gridAndIntersect()
+      if (this.props.annotations.length > 0) {
+        this.map.getSource('data').setData(fc(this.props.annotations))
+        this.gridAndIntersect()
+      }
     }
     if (prevState.zoom !== this.state.zoom) {
       this.gridAndIntersect()
@@ -96,6 +98,29 @@ class Modal extends React.Component {
     const description = this.props.project.hasOwnProperty('extras')
       ? (this.props.project.extras && this.props.project.extras.validationDescription) || validationDescription
       : ''
+
+    if (this.props.annotations.length === 0) {
+      return <Fragment>
+        <div className='modal fade in'>
+          <div className='modal-dialog'>
+            <div className='modal-content'>
+              <div className='modal-header'>
+                <button type='button' className={c('close')} aria-label='Close' onClick={() => this.props.onClick(null)}>
+                  <span aria-hidden='true'>×</span>
+                </button>
+                <h4 className='modal-title'>Configure Project</h4>
+              </div>
+              <div className='modal-body'>
+                <p>This project doesn't have any annotations yet. Add some on the <a href={`https://app.radiant.earth/projects/edit/${this.props.project.id}/annotate`} target='_blank'>Radiant Earth Platform</a></p>
+              </div>
+              <div className='modal-footer'></div>
+            </div>
+          </div>
+        </div>
+        <div className='modal-backdrop in'></div>
+      </Fragment>
+    }
+
     return (
       <Fragment>
         <div className='modal fade in'>
