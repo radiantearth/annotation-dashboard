@@ -4,8 +4,7 @@ import { connect } from 'react-redux'
 import { PropTypes as T } from 'prop-types'
 
 import { environment } from '../config'
-import { LOCAL_PROJECTS } from '../utils/constants'
-import { fetchProjects, addProject, deleteProject } from '../actions'
+import { fetchProjects, addProject, deleteProject, addProjectError } from '../actions'
 
 import App from './app'
 import ProjectCard from '../components/project-card'
@@ -16,6 +15,7 @@ class Home extends React.Component {
     this.props.dispatch(fetchProjects())
     this.addProject = this.addProject.bind(this)
     this.deleteProject = this.deleteProject.bind(this)
+    this.clearError = this.clearError.bind(this)
   }
 
   render () {
@@ -29,13 +29,23 @@ class Home extends React.Component {
                 <div className='flex-fill'></div>
               </div>
               <div className='pagination-count'>
-                Showing <strong>{this.props.projects.length ? 1 : 0}</strong> - <strong>{this.props.projects.length}</strong> of <strong>{this.props.projects.length}</strong> projects
+                Showing <strong>{this.props.projects.length ? 1 : 0}</strong> -
+                <strong>{this.props.projects.length}</strong> of
+                <strong>{this.props.projects.length}</strong> projects
               </div>
               <div className='row stack-xs'>
                 {this.props.projects.map(project => {
-                  return <ProjectCard key={project.id} project={project} deleteProject={this.deleteProject}/>
+                  return <ProjectCard
+                    key={project.id}
+                    project={project}
+                    deleteProject={this.deleteProject}
+                  />
                 })}
-                <AddProjectCard addProject={this.addProject}/>
+                <AddProjectCard
+                  addProject={this.addProject}
+                  addProjectError={this.props.addProjectError}
+                  clearError={this.clearError}
+                />
               </div>
             </div>
             <div className='column spacer'></div>
@@ -43,7 +53,7 @@ class Home extends React.Component {
               <div className='aside'>
                 <section>
                 Welcome to the <strong>Radiant Earth Label Validation Tool</strong>.
-                This is a web-based tool to curate and catalogue satellite machine
+                This is a web-based tool to curate and catalog satellite machine
                 learning training data. The tool takes input label data from the
                 Radiant Earth Platform Annotation API and loads it here, where
                 expert users like you can validate that the given labels correspond
@@ -65,29 +75,31 @@ class Home extends React.Component {
   }
 
   addProject (id) {
-    const projectIds = this.props.projects.map(p => p.id)
-    localStorage.setItem(LOCAL_PROJECTS, projectIds.concat([id]))
     this.props.dispatch(addProject(id))
   }
 
   deleteProject (e, id) {
     e.preventDefault()
-    const projectIds = this.props.projects.map(p => p.id)
-    localStorage.setItem(LOCAL_PROJECTS, projectIds.filter(p => p !== id))
     this.props.dispatch(deleteProject(id))
+  }
+
+  clearError () {
+    this.props.dispatch(addProjectError(''))
   }
 }
 
 function mapStateToProps (state) {
   return {
-    projects: state.projects || []
+    projects: state.projects || [],
+    addProjectError: state.addProjectError
   }
 }
 
 if (environment !== 'production') {
   Home.propTypes = {
     dispatch: T.func,
-    projects: T.array
+    projects: T.array,
+    addProjectError: T.string
   }
 }
 

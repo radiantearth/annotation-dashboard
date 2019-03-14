@@ -3,7 +3,7 @@
 import fetch from 'isomorphic-fetch'
 import config from '../config'
 import * as AuthService from '../utils/auth'
-import { LOCAL_PROJECTS } from '../utils/constants'
+import { LOCAL_PROJECTS, REQUIRED_PERMISSIONS, PERMISSIONS_ERROR } from '../utils/constants'
 
 export const REQUEST_PROJECTS = 'REQUEST_PROJECTS'
 export const RECEIVE_PROJECTS = 'RECEIVE_PROJECTS'
@@ -37,10 +37,13 @@ export const RECEIVE_EXPORTS = 'RECEIVE_EXPORTS'
 export const ADD_PROJECT = 'ADD_PROJECT'
 export const DELETE_PROJECT = 'DELETE_PROJECT'
 export const INVALIDATE_PROJECT = 'INVALIDATE_PROJECT'
+export const ADD_PROJECT_ERROR = 'ADD_PROJECT_ERROR'
 
-const fetchOptions = {
-  headers: {
-    'Authorization': `Bearer ${AuthService.getToken()}`
+function fetchOptions () {
+  return {
+    headers: {
+      'Authorization': `Bearer ${AuthService.getToken()}`
+    }
   }
 }
 
@@ -57,17 +60,39 @@ export function fetchProjects () {
     dispatch(requestProjects())
     const ids = localStorage.getItem(LOCAL_PROJECTS) || '' // comma-separated string
     const projectPromises = ids.split(',').filter(Boolean)
-      .map(id => fetch(`${config.api}/projects/${id}`, fetchOptions).then(resp => resp.json()))
+      .map(id => fetch(`${config.api}/projects/${id}`, fetchOptions()).then(resp => resp.json()))
     const projects = await Promise.all(projectPromises)
     dispatch(receiveProjects(projects))
   }
 }
 
+export function addProjectError (msg) {
+  return { type: ADD_PROJECT_ERROR, data: msg }
+}
+
 export function addProject (id) {
   return async function (dispatch) {
     dispatch(requestProject())
-    const project = await fetch(`${config.api}/projects/${id}`, fetchOptions).then(resp => resp.json())
-    dispatch({ type: ADD_PROJECT, data: project })
+    let project = {}
+    try {
+      project = await fetch(`${config.api}/projects/${id}`, fetchOptions()).then(resp => resp.json())
+    } catch (e) {
+      return dispatch(addProjectError(`No project with id: ${id}`))
+    }
+    let permissions = []
+    try {
+      permissions = await fetch(`${config.api}/projects/${id}/permissions`, fetchOptions()).then(resp => resp.json())
+    } catch (e) {
+      return dispatch(addProjectError(PERMISSIONS_ERROR))
+    }
+    const profile = AuthService.getProfile()
+    // if the user owns the project or has annotate/edit/delete permissions, we can use it
+    const userPermissions = permissions.filter(p => p.subjectId === profile.sub).map(p => p.actionType)
+    if (profile.sub === project.owner || REQUIRED_PERMISSIONS.every(p => userPermissions.includes(p))) {
+      dispatch({ type: ADD_PROJECT, data: project })
+    } else {
+      dispatch(addProjectError(PERMISSIONS_ERROR))
+    }
   }
 }
 
@@ -175,7 +200,7 @@ export function saveProject (project) {
 
 // Fetcher function
 function getAndDispatch (url, requestFn, receiveFn) {
-  return fetchDispatchFactory(url, fetchOptions, requestFn, receiveFn)
+  return fetchDispatchFactory(url, fetchOptions(), requestFn, receiveFn)
 }
 
 function fetchDispatchFactory (url, options, requestFn, receiveFn) {

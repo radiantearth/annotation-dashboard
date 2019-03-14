@@ -105,3 +105,16 @@ input[type=range]:focus::-webkit-slider-runnable-track {
 .project-id {
   padding: 0.4em;
 }
+
+.pagination-count {
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+.panel {
+  margin-bottom: 0;
+  .error {
+    color: $danger;
+    margin-left: 1rem;
+  }
+}

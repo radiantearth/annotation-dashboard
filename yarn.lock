@@ -2285,7 +2285,7 @@ create-hmac@^1.1.0, create-hmac@^1.1.2, create-hmac@^1.1.4:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
-create-react-class@^15.6.0:
+create-react-class@^15.5.2, create-react-class@^15.6.0:
   version "15.6.3"
   resolved "https://registry.npmjs.org/create-react-class/-/create-react-class-15.6.3.tgz#2d73237fb3f970ae6ebe011a9e66f46dbca80036"
   dependencies:
@@ -4697,7 +4697,7 @@ hoek@0.9.x:
   version "0.9.1"
   resolved "https://registry.npmjs.org/hoek/-/hoek-0.9.1.tgz#3d322462badf07716ea7eb85baf88079cddce505"
 
-hoist-non-react-statics@^2.5.0:
+hoist-non-react-statics@^2.3.1, hoist-non-react-statics@^2.5.0:
   version "2.5.5"
   resolved "https://registry.npmjs.org/hoist-non-react-statics/-/hoist-non-react-statics-2.5.5.tgz#c5903cf409c0dfd908f388e619d86b9c1174cb47"
 
@@ -7360,6 +7360,14 @@ react-tether@^1.0.3:
   dependencies:
     prop-types "^15.6.2"
     tether "^1.4.5"
+
+react-timeout@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.npmjs.org/react-timeout/-/react-timeout-1.2.0.tgz#7b5691cd6ab9f22773d82432f5707a00d601dafe"
+  dependencies:
+    create-react-class "^15.5.2"
+    hoist-non-react-statics "^2.3.1"
+    object-assign "^4.0.1"
 
 react-transition-group@^2.2.1, react-transition-group@^2.5.0:
   version "2.5.3"
