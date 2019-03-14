@@ -12,6 +12,7 @@ import Home from './views/home'
 import Project from './views/project'
 import UhOh from './views/uhoh'
 import Login from './views/login'
+import Logout from './views/logout'
 
 import * as AuthService from './utils/auth'
 
@@ -33,6 +34,7 @@ const Root = () => (
       <Switch>
         <AuthRoute exact path='/' component={Home}/>
         <AuthRoute path='/project/:id' component={Project}/>
+        <Route path='/logout' component={Logout} />
         <Route path='*' component={UhOh} />
       </Switch>
     </Router>

@@ -29,9 +29,7 @@ class Home extends React.Component {
                 <div className='flex-fill'></div>
               </div>
               <div className='pagination-count'>
-                Showing <strong>{this.props.projects.length ? 1 : 0}</strong> -
-                <strong>{this.props.projects.length}</strong> of
-                <strong>{this.props.projects.length}</strong> projects
+                Showing <strong>{this.props.projects.length ? 1 : 0}</strong> - <strong>{this.props.projects.length}</strong> of <strong>{this.props.projects.length}</strong> projects
               </div>
               <div className='row stack-xs'>
                 {this.props.projects.map(project => {
