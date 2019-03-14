@@ -22,7 +22,7 @@
   z-index: 1050;
   display: none; // none by default, but block on "open" of the menu
   float: left;
-  min-width: calc(100% - 2rem);
+  min-width: 100%;
   padding: 10px;
   margin: 0; // override default ul
   margin-top: -2px;
@@ -202,7 +202,7 @@
   // @TODO: this may need to be removed
   // Added to handle non-float navbar
   .navbar-section .dropdown-menu {
-    right: auto; left: 1rem;
+    right: auto; left: 0;
 
     &.dropdown-menu-right {
       right: 0;

@@ -3,6 +3,7 @@ import React from 'react'
 import { PropTypes as T } from 'prop-types'
 import { connect } from 'react-redux'
 import bbox from '@turf/bbox'
+import { featureCollection as fc } from '@turf/helpers'
 
 import { environment } from '../config'
 import { propsToProject } from '../utils/utils'
@@ -16,7 +17,8 @@ import SaveModal from '../components/modals/save'
 
 import { fetchAnnotations, updateModal, setGrid, selectTask, fetchLabels,
   updateAnnotation, validateGrid, setDrawLabel, appendAnnotation,
-  saveProject, fetchProject, fetchExports, invalidateProject } from '../actions'
+  saveProject, fetchProject, fetchExports, invalidateProject,
+  updateRemoteAnnotations } from '../actions'
 
 class Project extends React.Component {
   constructor () {
@@ -24,7 +26,8 @@ class Project extends React.Component {
 
     this.setMap = this.setMap.bind(this)
     this.getMap = this.getMap.bind(this)
-    this.closeModal = this.closeModal.bind(this)
+    this.closeSaveModal = this.closeSaveModal.bind(this)
+    this.closeSetupModal = this.closeSetupModal.bind(this)
     this.selectTask = this.selectTask.bind(this)
     this.updateAnnotation = this.updateAnnotation.bind(this)
     this.validateGridAndAdvance = this.validateGridAndAdvance.bind(this)
@@ -52,13 +55,13 @@ class Project extends React.Component {
     switch (this.props.modal) {
       case SETUP_MODAL:
         modal = <SetupModal
-          onClick={this.closeModal}
+          onClick={this.closeSetupModal}
           annotations={this.props.annotations}
           project={this.props.project} />
         break
       case SAVE_MODAL:
         modal = <SaveModal
-          onClick={this.closeModal}
+          onClick={this.closeSaveModal}
           project={this.props.project}
           exports={this.props.exports}
           saveProject={this.saveProject}
@@ -107,9 +110,13 @@ class Project extends React.Component {
     return this.map
   }
 
-  closeModal (grid) {
+  closeSetupModal (grid) {
     this.props.dispatch(updateModal(false))
     if (grid) this.props.dispatch(setGrid(grid))
+  }
+
+  closeSaveModal () {
+    this.props.dispatch(updateModal(false))
   }
 
   selectTask (task) {
@@ -140,6 +147,7 @@ class Project extends React.Component {
 
   async saveProject (exports) {
     const project = await propsToProject(this.props, exports)
+    updateRemoteAnnotations(this.props.project.id, fc(this.props.annotations))
     this.props.dispatch(saveProject(project))
     this.props.dispatch(updateModal(false))
   }

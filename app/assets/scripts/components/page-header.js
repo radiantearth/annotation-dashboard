@@ -1,12 +1,25 @@
 'use strict'
 import React from 'react'
 import { PropTypes as T } from 'prop-types'
-import { NavLink } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
+import c from 'classnames'
 
 import { environment } from '../config'
 import * as AuthService from '../utils/auth'
 
-export default class PageHeader extends React.PureComponent {
+export default class PageHeader extends React.Component {
+  constructor () {
+    super()
+    this.state = {
+      drop: false
+    }
+    this.toggleDrop = this.toggleDrop.bind(this)
+  }
+
+  toggleDrop () {
+    this.setState({ drop: !this.state.drop })
+  }
+
   render () {
     const profile = AuthService.getProfile()
     const ProfilePicture = profile.picture
@@ -28,44 +41,17 @@ export default class PageHeader extends React.PureComponent {
         </div>
         <div className='navbar-section secondary'>
           <nav>
-            <div className='dropdown-my-account dropdown'>
-              <a>
+            <div className={c('dropdown-my-account dropdown', { open: this.state.drop })}>
+              <a onClick={this.toggleDrop}>
                 {ProfilePicture}
                 <span className='username'>{profile.nickname}</span>
                 <i className='icon-caret-down'></i>
               </a>
-              <ul className='dropdown-menu dropdown-menu-right' aria-labelledby='dLabel'>
-                <li>
-                  <a ui-sref='user({userId: me})'>
-                    My Profile
-                  </a>
-                </li>
-                <li>
-                  <a
-                    ui-sref='admin.platform({platformId: $ctrl.platformId})'
-                    ng-if='$ctrl.showAdmin'>
-                    Platform Management
-                  </a>
-                </li>
-                <li>
-                  <a ui-sref='user.organizations({userId: me})'>
-                    My Organizations
-                  </a>
-                </li>
-                <li>
-                  <a ui-sref='user.teams({userId: me})'>
-                    My Teams
-                  </a>
-                </li>
-                <li>
-                  <a ui-sref='user.settings({userId: me})'>
-                    Account Settings
-                  </a>
-                </li>
+              <ul className='dropdown-menu dropdown-menu-right'>
                 <li role='separator' className='divider'></li>
-                <li><a ng-click='$ctrl.logout()'>
+                <li><Link to='/logout'>
                   Sign out
-                </a></li>
+                </Link></li>
               </ul>
             </div>
           </nav>

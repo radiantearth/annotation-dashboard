@@ -22,7 +22,7 @@ export default class Login extends React.Component {
     // Add callback for lock's `authorization_error` event
     AuthService.lock.on('authorization_error', error => {
       console.log(error)
-      history.push({ pathname: '/' })
+      this.props.history.push({ pathname: '/' })
     })
 
     if (!AuthService.isAuthenticated()) {
