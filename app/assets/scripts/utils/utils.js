@@ -10,18 +10,20 @@ export function objForeach (obj, callbackFn) {
   return Object.keys(obj).some(k => callbackFn(obj[k], k))
 }
 
-const fetchOptions = {
-  headers: {
-    'Authorization': `Bearer ${AuthService.getToken()}`
+function fetchOptions () {
+  return {
+    headers: {
+      'Authorization': `Bearer ${AuthService.getToken()}`
+    }
   }
 }
 
 async function getProject (id) {
-  return fetch(`${config.api}/projects/${id}`, fetchOptions).then(resp => resp.json())
+  return fetch(`${config.api}/projects/${id}`, fetchOptions()).then(resp => resp.json())
 }
 
 async function getScenes (id) {
-  return fetch(`${config.api}/projects/${id}/scenes`, fetchOptions).then(resp => resp.json())
+  return fetch(`${config.api}/projects/${id}/scenes`, fetchOptions()).then(resp => resp.json())
 }
 
 // takes project props object and convert to payload for saving
