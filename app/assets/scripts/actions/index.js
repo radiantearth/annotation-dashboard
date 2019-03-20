@@ -79,7 +79,6 @@ export function addProject (id) {
     try {
       project = await fetch(`${config.api}/projects/${id}`, fetchOptions()).then(resp => resp.json())
     } catch (e) {
-      console.log(e);
       return dispatch(addProjectError(`No project with id: ${id}`))
     }
     let permissions = []
@@ -99,8 +98,8 @@ export function addProject (id) {
   }
 }
 
-export async function updateRemoteAnnotations (id, collection) {
-  const features = collection.features.map(f => {
+export async function updateRemoteAnnotations (id, annotations) {
+  const features = annotations.map(f => {
     const feat = Object.assign({}, f)
     delete feat.properties.owner
     feat.properties.verifiedBy = AuthService.getProfile().sub

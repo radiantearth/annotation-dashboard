@@ -3,7 +3,6 @@ import React from 'react'
 import { PropTypes as T } from 'prop-types'
 import { connect } from 'react-redux'
 import bbox from '@turf/bbox'
-import { featureCollection as fc } from '@turf/helpers'
 
 import { environment } from '../config'
 import { propsToProject } from '../utils/utils'
@@ -35,6 +34,8 @@ class Project extends React.Component {
     this.appendAnnotation = this.appendAnnotation.bind(this)
     this.saveProject = this.saveProject.bind(this)
     this.openSaveModal = this.openSaveModal.bind(this)
+    this.saveAnnotations = this.saveAnnotations.bind(this)
+    this.refreshExports = this.refreshExports.bind(this)
   }
 
   componentDidMount () {
@@ -65,6 +66,8 @@ class Project extends React.Component {
           project={this.props.project}
           exports={this.props.exports}
           saveProject={this.saveProject}
+          saveAnnotations={this.saveAnnotations}
+          refreshExports={this.refreshExports}
         />
     }
     return (
@@ -147,9 +150,17 @@ class Project extends React.Component {
 
   async saveProject (exports) {
     const project = await propsToProject(this.props, exports)
-    updateRemoteAnnotations(this.props.project.id, fc(this.props.annotations))
+    updateRemoteAnnotations(this.props.project.id, this.props.annotations)
     this.props.dispatch(saveProject(project))
     this.props.dispatch(updateModal(false))
+  }
+
+  saveAnnotations () {
+    updateRemoteAnnotations(this.props.project.id, this.props.annotations)
+  }
+
+  refreshExports () {
+    this.props.dispatch(fetchExports(this.props.match.params.id))
   }
 }
 
