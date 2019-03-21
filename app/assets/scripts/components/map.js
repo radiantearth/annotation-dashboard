@@ -72,12 +72,20 @@ class Map extends React.Component {
           data: fc([])
         })
         map.addLayer({
+          id: 'gridunderlay',
+          type: 'line',
+          source: 'grid',
+          paint: {
+            'line-color': 'white',
+            'line-width': 2
+          }
+        })
+        map.addLayer({
           id: 'grid',
           type: 'line',
           source: 'grid',
           paint: {
-            'line-opacity': 0.5,
-            'line-dasharray': [4, 2]
+            'line-width': 1
           }
         })
         map.addLayer({
