@@ -2,6 +2,8 @@
 'use strict'
 import fetch from 'isomorphic-fetch'
 import config from '../config'
+import { featureCollection as fc } from '@turf/helpers'
+
 import * as AuthService from '../utils/auth'
 import { LOCAL_PROJECTS, REQUIRED_PERMISSIONS, PERMISSIONS_ERROR } from '../utils/constants'
 
@@ -96,14 +98,20 @@ export function addProject (id) {
   }
 }
 
-export async function updateRemoteAnnotations (id, fc) {
+export async function updateRemoteAnnotations (id, annotations) {
+  const features = annotations.map(f => {
+    const feat = Object.assign({}, f)
+    delete feat.properties.owner
+    feat.properties.verifiedBy = AuthService.getProfile().sub
+    return feat
+  })
   const deleteOptions = Object.assign({}, fetchOptions(), {
     method: 'DELETE'
   })
   const postOptions = {
     method: 'POST',
     headers: Object.assign({ 'Content-Type': 'application/json' }, fetchOptions().headers),
-    body: JSON.stringify(fc)
+    body: JSON.stringify(fc(features))
   }
   await fetch(`${config.api}/projects/${id}/annotations`, deleteOptions)
   await fetch(`${config.api}/projects/${id}/annotations`, postOptions).then(resp => resp.json())

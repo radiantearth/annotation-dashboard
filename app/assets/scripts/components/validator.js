@@ -70,7 +70,7 @@ class Validator extends React.Component {
             <h1>Validate Feature</h1>
           </header>
           <div className='validator-body'>
-            <p>Is this the correct feature? Update the geometry using the map tools or the label by using the dropdown below.</p>
+            <p>Is this the correct feature? If not, update the geometry on the map or change the label by using the dropdown below.</p>
             <Select
               options={options}
               value={value}
@@ -87,10 +87,10 @@ class Validator extends React.Component {
       return (
         <div className='validator map-item'>
           <header>
-            <h1>Validate Grid Cell</h1>
+            <h1>Validate Task</h1>
           </header>
           <div className='validator-body'>
-            <p>Are there any other features which need to be labeled? If so, select the corresponding button and begin labeling. Otherwise, confirm this grid cell as validated.</p>
+            <p>Are there any other features which need to be labeled? If so, select the corresponding button and begin labeling. Otherwise, confirm this task as validated.</p>
             <form>
               {this.props.labels.map(label => {
                 return <label className={c('checkbox radio', {active: label === this.props.drawLabel})} key={label}>
@@ -100,7 +100,7 @@ class Validator extends React.Component {
             </form>
           </div>
           <footer>
-            <button className='btn btn-primary' onClick={this.props.validateGridAndAdvance.bind(this, task)}>Validate Grid Cell and Advance</button>
+            <button className='btn btn-primary' onClick={this.props.validateGridAndAdvance.bind(this, task)}>Validate Task and Advance</button>
           </footer>
         </div>
       )

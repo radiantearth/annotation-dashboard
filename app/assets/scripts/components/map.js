@@ -72,12 +72,20 @@ class Map extends React.Component {
           data: fc([])
         })
         map.addLayer({
+          id: 'gridunderlay',
+          type: 'line',
+          source: 'grid',
+          paint: {
+            'line-color': 'white',
+            'line-width': 2
+          }
+        })
+        map.addLayer({
           id: 'grid',
           type: 'line',
           source: 'grid',
           paint: {
-            'line-opacity': 0.5,
-            'line-dasharray': [4, 2]
+            'line-width': 1
           }
         })
         map.addLayer({
@@ -165,19 +173,17 @@ class Map extends React.Component {
     if (!isEqual(this.props.grid, prevProps.grid)) {
       this.map.getSource('grid').setData(this.props.grid)
     }
-    if (this.props.selectedTask) {
-      this._validator._render({
-        task: this.props.selectedTask,
-        annotations: this.props.annotations,
-        verifyAnnotation: this.verifyAnnotation,
-        updateAnnotation: this.updateAnnotation,
-        labels: this.props.labels,
-        validateGridAndAdvance: this.props.validateGridAndAdvance,
-        map: this.map,
-        drawLabel: this.props.drawLabel,
-        setDrawLabel: this.props.setDrawLabel
-      })
-    }
+    this._validator._render({
+      task: this.props.selectedTask,
+      annotations: this.props.annotations,
+      verifyAnnotation: this.verifyAnnotation,
+      updateAnnotation: this.updateAnnotation,
+      labels: this.props.labels,
+      validateGridAndAdvance: this.props.validateGridAndAdvance,
+      map: this.map,
+      drawLabel: this.props.drawLabel,
+      setDrawLabel: this.props.setDrawLabel
+    })
     if ((!isEqual(this.props.labels, prevProps.labels) && this.state.mapLoaded) ||
       (this.props.labels.length && this.state.mapLoaded && !prevState.mapLoaded)) {
       this.rewriteDrawStyles(this.props.labels)

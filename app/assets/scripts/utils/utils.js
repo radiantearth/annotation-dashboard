@@ -27,14 +27,14 @@ async function getScenes (id) {
 }
 
 // takes project props object and convert to payload for saving
-export async function propsToProject (props, exports) {
+export async function propsToProject (props, exports, description) {
   const id = props.match.params.id
   const scenes = await getScenes(id)
   const project = await getProject(id)
   return {
     id,
     name: project.name,
-    description: `Labels for project ${id}`,
+    description,
     'validated area': bbox(props.grid),
     'scene-metadata': { results: scenes.results },
     labels: fc(props.annotations),
