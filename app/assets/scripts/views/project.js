@@ -137,7 +137,11 @@ class Project extends React.Component {
     const features = this.props.grid.features
     const current = features.findIndex(f => f.id === task.id)
     const next = features[(current + 1) % features.length]
-    this.selectTask(next)
+    if (next.properties.status !== 'validated') {
+      this.selectTask(next)
+    } else {
+      this.props.dispatch(selectTask(null))
+    }
   }
 
   setDrawLabel (label) {
