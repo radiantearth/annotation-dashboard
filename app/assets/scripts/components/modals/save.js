@@ -10,7 +10,8 @@ class Modal extends React.Component {
   constructor () {
     super()
     this.state = {
-      selectedExportIds: []
+      selectedExportIds: [],
+      labelDescription: ''
     }
     this.exportToggle = this.exportToggle.bind(this)
     this.refreshExports = this.refreshExports.bind(this)
@@ -56,8 +57,12 @@ class Modal extends React.Component {
                     })}
                   </form>
                   <p>Don't see any exports? Create an S3 export on the <a href={`https://app.radiant.earth/projects/edit/${project.id}/exports`} target="_blank">Radiant Earth Platform</a> then <a href="" onClick={this.refreshExports}>reload the exports</a>.</p>
+                  <form>
+                    <label htmlFor=''>Project Description</label>
+                    <textarea className='label-description' placeholder='Label Description' value={this.state.labelDescription} onChange={e => this.setState({labelDescription: e.target.value})} />
+                  </form>
                   <div className='modal-submit'>
-                    <button type='button' className={c('btn btn-primary', { disabled: !this.state.selectedExportIds.length })} onClick={() => saveProject(exports.filter(e => this.state.selectedExportIds.includes(e.id)))}>Publish Labels</button>
+                    <button type='button' className={c('btn btn-primary', { disabled: !this.state.selectedExportIds.length || !this.state.labelDescription })} onClick={() => saveProject(exports.filter(e => this.state.selectedExportIds.includes(e.id)), this.state.labelDescription)}>Publish Labels</button>
                   </div>
                 </section>
                 <section className='save-partial'>

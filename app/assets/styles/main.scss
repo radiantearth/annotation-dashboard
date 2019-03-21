@@ -28,6 +28,11 @@
 .save-summary {
   flex-direction: column;
   padding: 0 2em;
+  textarea {
+    resize: none;
+    width: 100%;
+    padding: 0.5em;
+  }
 }
 
 .save-partial {

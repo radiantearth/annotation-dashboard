@@ -148,8 +148,8 @@ class Project extends React.Component {
     this.props.dispatch(appendAnnotation(feature))
   }
 
-  async saveProject (exports) {
-    const project = await propsToProject(this.props, exports)
+  async saveProject (exports, description) {
+    const project = await propsToProject(this.props, exports, description)
     updateRemoteAnnotations(this.props.project.id, this.props.annotations)
     this.props.dispatch(saveProject(project))
     this.props.dispatch(updateModal(false))
