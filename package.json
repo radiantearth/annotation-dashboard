@@ -118,7 +118,7 @@
     "lodash.uniqby": "^4.7.0",
     "luxon": "^1.2.1",
     "mapbox-gl": "0.50.0",
-    "moment": "^2.22.2",
+    "moment": "^2.29.2",
     "qs": "^6.5.2",
     "react": "~16.2.0",
     "react-custom-scrollbars": "^4.2.1",
